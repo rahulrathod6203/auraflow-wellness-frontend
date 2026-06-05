@@ -1,86 +1,169 @@
 import React, { useState } from "react";
-import { Container, Card, Form, Button } from "react-bootstrap";
+import { getToken, login, saveLoggedInUser, storeToken } from "./AuthService"; // Assuming your login function is exported here
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+  });
+
+  // Individual field error states
+  const [fieldErrors, setFieldErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setUserData({ ...userData, [e.target.id]: e.target.value });
+    if (errorMessage) setErrorMessage("");
+
+    // Clear the individual field error when the user begins retyping
+    if (fieldErrors[e.target.id]) {
+      setFieldErrors({ ...fieldErrors, [e.target.id]: "" });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Sending credentials to Spring Boot backend:", formData);
-    // TODO: Add Axios POST request to '/auth/login' here
+    setSuccessMessage("");
+    setErrorMessage("");
+    setFieldErrors({ email: "", password: "" }); // Reset field errors
+
+    login(userData)
+      .then((response) => {
+        setSuccessMessage(response.data.message || "Login successful!");
+
+        setUserData({ email: "", password: "" });
+
+        const token = "Bearer " + response.data.token;
+        storeToken(token);
+        const updatedToken = getToken(token);
+        // console.log(updatedToken);
+
+        saveLoggedInUser(userData.email);
+        navigate("/userDashboard");
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response && error.response.data) {
+          console.log(error.response.data);
+
+          // const { message, fieldErrors: backendErrors } = error.response.data;
+          const message = error.response.data.message;
+          const backendErrors = error.response.data.fieldErrors;
+
+          // 2. Handle standard validation annotation errors
+          if (backendErrors) {
+            setFieldErrors({
+              email: backendErrors.email || "",
+              password: backendErrors.password || "",
+            });
+          }
+
+          setErrorMessage(message || "Login failed. Please check your inputs.");
+        } else {
+          setErrorMessage("Network Error: Server is unreachable.");
+        }
+      });
   };
 
   return (
-    <div data-bs-theme="dark" className="bg-dark text-white min-vh-100 d-flex align-items-start justify-content-center pt-5">
-      <Container className="d-flex justify-content-center pt-5">
-        <Card className="p-4 w-100 border-secondary-subtle shadow-lg" style={{ maxWidth: "500px", backgroundColor: "#1e1e1e" }}>
-          <Card.Body>
-            {/* Minimal Brand Logo */}
-            <div className="text-center mb-4">
-              <h2 className="fw-bold" style={{ color: "#ff4081" }}>
-                ♥️ Aura
-              </h2>
-              <p className="text-muted small">Track your cycles. Understand your body.</p>
-            </div>
+    <div className="container min-vh-100 d-flex align-items-start justify-content-center pt-5">
+      <div
+        className="card p-4 shadow-sm"
+        style={{ maxWidth: "600px", width: "100%" }} // Adjusted container sizing perfectly for a clean dual-field form layout
+      >
+        <div className="text-center mb-4">
+          <h2 className="fw-bold" style={{ color: "#ff4081" }}>
+            🩷 Aura
+          </h2>
+          <p className="text-muted">Sign in to your account</p>
+        </div>
 
-            <h4 className="fw-bold mb-1">Welcome Back</h4>
-            <p className="text-secondary small mb-4">Please enter your account details to sign in</p>
+        {/* Common Success Message Banner */}
+        {successMessage && (
+          <div className="alert alert-success py-2 small text-center mb-3">
+            {successMessage}
+          </div>
+        )}
 
-            <Form onSubmit={handleSubmit}>
-              {/* Email Address Input */}
-              <Form.Group className="mb-3" controlId="formEmail">
-                <Form.Label className="small text-secondary">Email Address</Form.Label>
-                <Form.Control
-                  required
-                  type="email"
-                  name="email"
-                  placeholder="name@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="py-2"
-                />
-              </Form.Group>
+        {/* Fallback Global Error Message Banner (Shows up if credentials fail universally) */}
+        {errorMessage && !Object.values(fieldErrors).some(Boolean) && (
+          <div className="alert alert-danger py-2 small text-center mb-3">
+            {errorMessage}
+          </div>
+        )}
 
-              {/* Password Input */}
-              <Form.Group className="mb-4" controlId="formPassword">
-                <Form.Label className="small text-secondary">Password</Form.Label>
-                <Form.Control
-                  required
-                  type="password"
-                  name="password"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="py-2"
-                />
-              </Form.Group>
-
-              {/* Action Button */}
-              <Button type="submit" className="w-100 py-2 fw-semibold border-0" style={{ backgroundColor: "#ff4081", color: "#fff" }}>
-                Sign In
-              </Button>
-            </Form>
-
-            {/* Redirection Link to Register */}
-            <div className="text-center mt-4">
-              <span className="text-muted small">Don't have an account? </span>
-              <span
-                onClick={() => navigate("/register")}
-                className="small fw-semibold text-decoration-none"
-                style={{ color: "#ff4081", cursor: "pointer" }}
+        <form onSubmit={handleSubmit}>
+          {/* Email Address Input */}
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              Email address
+            </label>
+            <input
+              required
+              type="email"
+              className={`form-control ${fieldErrors.email ? "is-invalid" : ""}`}
+              id="email"
+              placeholder="Enter email"
+              value={userData.email}
+              onChange={handleChange}
+            />
+            {fieldErrors.email && (
+              <div
+                className="text-danger small mt-1 ps-1"
+                style={{ fontSize: "0.85rem" }}
               >
-                Sign up
-              </span>
-            </div>
-          </Card.Body>
-        </Card>
-      </Container>
+                ⚠️ {fieldErrors.email}
+              </div>
+            )}
+          </div>
+
+          {/* Password Input */}
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
+            <input
+              required
+              type="password"
+              className={`form-control ${fieldErrors.password ? "is-invalid" : ""}`}
+              id="password"
+              placeholder="Enter password"
+              value={userData.password}
+              onChange={handleChange}
+            />
+            {fieldErrors.password && (
+              <div
+                className="text-danger small mt-1 ps-1"
+                style={{ fontSize: "0.85rem" }}
+              >
+                ⚠️ {fieldErrors.password}
+              </div>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="btn w-100 mb-3"
+            style={{ backgroundColor: "#ff4081", color: "white" }}
+          >
+            Login
+          </button>
+        </form>
+
+        <div className="text-center">
+          <span className="text-muted">Don't have an account? </span>
+          <a href="/register" className="text-decoration-none">
+            Register
+          </a>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,73 +1,105 @@
-import React, { useState } from "react";
-import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { getLoggedInUser, isUserLoggedIn, logout } from "../auth/AuthService";
 
 const Header = () => {
+  const isAuthenticated = isUserLoggedIn();
+
+  const user = getLoggedInUser();
+
   const navigate = useNavigate();
-  // Toggle this true/false to simulate logged-in vs logged-out states
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleLogout = () => {
-    console.log("Clearing token and logging out...");
-    setIsAuthenticated(false);
-    navigate("/"); // Redirect to home on logout
+    logout();
+    navigate("/login");
   };
 
   return (
-    <Navbar sticky="top" data-bs-theme="dark" bg="dark" expand="sm" className="border-bottom border-secondary-subtle py-3">
-      <Container>
-        {/* Brand Logo - Uses navigate to avoid page reload */}
-        <Navbar.Brand onClick={() => navigate("/")} className="fw-bold d-flex align-items-center gap-2" style={{ cursor: "pointer" }}>
-          <span style={{ color: "#ff4081", fontSize: "1.25rem" }}>♥️</span>
-          <span style={{ fontSize: "1.55rem" }}>Aura</span>
-        </Navbar.Brand>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+      <div className="container-fluid">
+        {/* Brand/Logo */}
+        <a className="navbar-brand fw-bold" href="#">
+          <i className="fas fa-bolt me-2 text-warning"></i>❤️ AuraFlow
+        </a>
 
-        {/* Navigation Actions */}
-        <Nav className="ms-auto d-flex flex-row align-items-center gap-3">
-          {!isAuthenticated ? (
-            <>
-              {/* Logged Out State: Beautifully matches your HomePage design */}
-              <Button onClick={() => navigate("/login")} className="fw-semibold border-0 px-3" style={{ backgroundColor: "#ff4081", color: "#fff" }}>
-                Login
-              </Button>
+        {/* Toggle Button for Mobile View */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-              <Button
-                onClick={() => navigate("/register")}
-                className="fw-semibold border-0 px-3"
-                style={{ backgroundColor: "#ff4081", color: "#fff" }}
-              >
-                Register
-              </Button>
-            </>
-          ) : (
-            <>
-              {/* Logged In State */}
-              <Nav.Link onClick={() => navigate("/dashboard")} className="text-white fw-semibold px-2" style={{ cursor: "pointer" }}>
-                Dashboard
-              </Nav.Link>
+        {/* Navbar Links & Buttons */}
+        <div className="collapse navbar-collapse" id="navbarNav">
+          {/* Left Side Links */}
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            {!isAuthenticated && (
+              <>
+                <li className="nav-item">
+                  <a className="nav-link active" aria-current="page" href="/">
+                    Home
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">
+                    Features
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">
+                    Pricing
+                  </a>
+                </li>
+              </>
+            )}
+          </ul>
 
-              {/* Profile Shortcut */}
-              <div
-                onClick={() => navigate("/profile")}
-                className="rounded-circle d-flex align-items-center justify-content-center bg-secondary fw-bold text-white shadow-sm"
-                style={{
-                  width: "35px",
-                  height: "35px",
-                  cursor: "pointer",
-                  fontSize: "0.85rem",
-                }}
-              >
-                U
-              </div>
-
-              <Button variant="outline-danger" size="sm" onClick={handleLogout} className="fw-semibold px-3">
-                Logout
-              </Button>
-            </>
-          )}
-        </Nav>
-      </Container>
-    </Navbar>
+          {/* Right Side Auth Buttons */}
+          <div className="d-flex gap-2">
+            {!isAuthenticated && (
+              <>
+                <a
+                  href="/login"
+                  className="btn btn-sm px-3 "
+                  style={{ backgroundColor: "#ff4081", color: "#fff" }}
+                >
+                  Login
+                </a>
+                <a
+                  href="/register"
+                  className="btn btn-sm px-3"
+                  style={{ backgroundColor: "#ff4081", color: "#fff" }}
+                >
+                  Register
+                </a>
+              </>
+            )}
+            {isAuthenticated && (
+              <>
+                <a
+                  className="btn btn-sm px-3"
+                  style={{ backgroundColor: "#ff4081", color: "#fff" }}
+                >
+                  Welcome {user}
+                </a>
+                <a
+                  onClick={handleLogout}
+                  className="btn btn-sm px-3"
+                  style={{ backgroundColor: "#ff4081", color: "#fff" }}
+                >
+                  Logout
+                </a>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
   );
 };
 

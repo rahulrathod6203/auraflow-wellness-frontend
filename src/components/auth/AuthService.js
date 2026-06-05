@@ -1,9 +1,39 @@
 import axios from "axios";
 
-const AUTH_URL = "http://localhost:8080/api/v1/auth/";
+const BASE_URL = "http://localhost:8080/api/v1/auth";
 
-export const register = (userData) => {
-  axios.post(AUTH_URL + "register", userData).catch((error) => {
-    console.log(error.response.data);
-  });
+export const register = (userData) =>
+  axios.post(`${BASE_URL}/register`, userData);
+
+export const login = (userCredentials) =>
+  axios.post(`${BASE_URL}/login`, userCredentials);
+
+export const storeToken = (token) => localStorage.setItem("token", token);
+export const getToken = () => localStorage.getItem("token");
+
+export const saveLoggedInUser = (email) =>
+  sessionStorage.setItem("authenticatedUser", email);
+
+export const isUserLoggedIn = (email) => {
+  const loggedInUser = sessionStorage.getItem("authenticatedUser");
+
+  if (loggedInUser == null) {
+    return false;
+  } else {
+    return true;
+  }
+  console.log(loggedInUser);
+};
+
+export const getLoggedInUser = () => {
+  const loggedInUserEmail = sessionStorage.getItem("authenticatedUser");
+  //console.log(loggedInUserEmail);
+
+  return loggedInUserEmail;
+};
+
+export const logout = () => {
+  localStorage.clear();
+  sessionStorage.clear();
+  // window.location.reload(false);
 };
