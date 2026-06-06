@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getLoggedInUser } from "../auth/AuthService";
+import { getLoggedInUser, logout } from "../auth/AuthService"; // Imported logout
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UserDashboard = () => {
+  const navigate = useNavigate();
+
   // Hardcoded or fetched user details placeholder
   const [user, setUser] = useState({
     name: "Rahul",
@@ -10,45 +14,75 @@ const UserDashboard = () => {
   });
 
   const [greeting, setGreeting] = useState("Welcome");
-  const [currentTime, setCurrentTime] = useState("");
+
+  // State to track remaining countdown seconds (15 minutes = 900 seconds)
+  const [secondsLeft, setSecondsLeft] = useState(15 * 60);
 
   const loggedUsername = getLoggedInUser().split(" ")[0];
 
+  // Effect 1: Handle dynamic time-of-day greeting (IST based)
   useEffect(() => {
-    const updateTimeAndGreeting = () => {
-      // 1. Get current date/time converted explicitly to Indian Standard Time (IST)
-      const istString = new Date().toLocaleString("en-US", {
-        timeZone: "Asia/Kolkata",
-      });
-      const istDate = new Date(istString);
-      const hours = istDate.getHours();
+    const istString = new Date().toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
+    const istDate = new Date(istString);
+    const hours = istDate.getHours();
 
-      // 2. Set Greeting text based on IST hours
-      if (hours >= 4 && hours < 12) {
-        setGreeting("Good Morning 🌅");
-      } else if (hours >= 12 && hours < 17) {
-        setGreeting("Good Afternoon ☀️");
-      } else if (hours >= 17 && hours < 22) {
-        setGreeting("Good Evening 🌆");
-      } else {
-        setGreeting("Good Night 🌌");
-      }
-
-      // 3. Format clock string for the dashboard
-      setCurrentTime(
-        istDate.toLocaleTimeString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        }),
-      );
-    };
-
-    updateTimeAndGreeting();
-    const interval = setInterval(updateTimeAndGreeting, 1000); // Live ticking clock
-    return () => clearInterval(interval);
+    if (hours >= 4 && hours < 12) {
+      setGreeting("Good Morning 🌅");
+    } else if (hours >= 12 && hours < 17) {
+      setGreeting("Good Afternoon ☀️");
+    } else if (hours >= 17 && hours < 22) {
+      setGreeting("Good Evening 🌆");
+    } else {
+      setGreeting("Good Night 🌌");
+    }
   }, []);
+
+  // Effect 2: 15-Minute Countdown Timer & Auto-Logout Sequence
+  useEffect(() => {
+    //load when use logs in
+    //Under maintainance
+
+    if (secondsLeft == 2) {
+      setTimeout(() => {
+        Swal.fire({
+          icon: "warning",
+          title: "Session Timeout",
+          text: "You are being logged out !, Please sign in again.",
+        });
+      }, 2000);
+    }
+    // If timer reaches zero, trigger logout routine automatically
+    if (secondsLeft <= 0) {
+      logout();
+      navigate("/login");
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setSecondsLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [secondsLeft, navigate]);
+
+  // Helper function to format seconds into an elegant MM:SS string
+  const formatTimer = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  };
+
+  const underMaintainance = () => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "This page is under development ⚠️",
+    });
+  };
+
+  useEffect(underMaintainance, []);
 
   return (
     <div className="bg-light min-vh-100 py-4">
@@ -76,12 +110,9 @@ const UserDashboard = () => {
             className="col-md-4 text-center text-md-end mt-4 mt-md-0"
             style={{ color: "black" }}
           >
-            <div className="bg-white bg-opacity-20 backdrop-blur rounded-3 p-3 d-inline-block border border-white border-opacity-25 shadow-sm">
-              <div className="small text-uppercase tracking-wider opacity-75">
-                Current Time
-              </div>
-              <div className="fs-3 fw-mono fw-bold">
-                {currentTime || "00:00:00 AM"}
+            <div className="bg-black bg-opacity-20 backdrop-blur rounded-3 p-2 d-inline-block border border-white border-opacity-25 shadow-sm">
+              <div className="small  tracking-wider opacity-75 text-white mb-1">
+                Session Expires in : {formatTimer(secondsLeft)} Min
               </div>
             </div>
           </div>
@@ -178,21 +209,21 @@ const UserDashboard = () => {
               <h5 className="fw-bold text-dark mb-3">Quick Actions</h5>
               <div className="list-group list-group-flush">
                 <a
-                  href="/profile"
+                  href="#"
                   className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between"
                 >
                   <span>👤 Edit Profile Options</span>
                   <span className="text-muted small">→</span>
                 </a>
                 <a
-                  href="/settings"
+                  href="#"
                   className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between"
                 >
                   <span>⚙️ Account Settings</span>
                   <span className="text-muted small">→</span>
                 </a>
                 <a
-                  href="/support"
+                  href="#"
                   className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between"
                 >
                   <span>🛡️ Security & Privacy</span>

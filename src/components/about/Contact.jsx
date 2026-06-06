@@ -47,6 +47,10 @@ const Contact = () => {
     setContactData({ email: "", message: "" });
   };
 
+  const closeForm = () => {
+    navigate("/");
+  };
+
   return (
     <div
       className="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
@@ -90,14 +94,26 @@ const Contact = () => {
       <div className="container position-relative" style={{ zIndex: 1 }}>
         <div className="d-flex justify-content-center">
           <div
-            className="w-100 p-4 p-sm-5 border-0 shadow-lg text-dark bg-white"
+            className="w-100 p-4 p-sm-5 border-0 shadow-lg text-dark bg-white position-relative" // Added position-relative here
             style={{
-              /* Sleek, compact profile footprint matching Login & Register setups */
+              /* Expanded sizing context parameters */
               maxWidth: "540px",
               borderRadius: "24px",
               boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
             }}
           >
+            <button
+              onClick={closeForm}
+              className="btn btn-link position-absolute top-0 end-0 m-3 p-2 text-decoration-none text-muted"
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "bold",
+                lineHeight: "1",
+              }}
+              aria-label="Close"
+            >
+              &times;
+            </button>
             {/* Soft Contrast Branding Header Layout */}
             <div className="text-center mb-4">
               <h1

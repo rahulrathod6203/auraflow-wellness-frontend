@@ -26,6 +26,10 @@ const LoginPage = () => {
     }
   };
 
+  const closeForm = () => {
+    navigate("/");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setSuccessMessage("");
@@ -112,7 +116,7 @@ const LoginPage = () => {
       <div className="container position-relative" style={{ zIndex: 1 }}>
         <div className="d-flex justify-content-center">
           <div
-            className="w-100 p-4 p-sm-5 border-0 shadow-lg text-dark bg-white"
+            className="w-100 p-4 p-sm-5 border-0 shadow-lg text-dark bg-white position-relative" // Added position-relative here
             style={{
               /* Expanded sizing context parameters */
               maxWidth: "540px",
@@ -120,6 +124,18 @@ const LoginPage = () => {
               boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
             }}
           >
+            <button
+              onClick={closeForm}
+              className="btn btn-link position-absolute top-0 end-0 m-3 p-2 text-decoration-none text-muted"
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "bold",
+                lineHeight: "1",
+              }}
+              aria-label="Close"
+            >
+              &times;
+            </button>
             {/* Soft Contrast Branding Header Layout */}
             <div className="text-center mb-5">
               <h1

@@ -1,20 +1,41 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getLoggedInUser, isUserLoggedIn, logout } from "../auth/AuthService";
+import Swal from "sweetalert2";
+import defaulticon from "../../assets/letter-u.png";
 
 const Header = () => {
   const isAuthenticated = isUserLoggedIn();
   const user = getLoggedInUser();
 
   // Set to null or "" to instantly test your monogram letter placeholder fallback!
-  const photo =
+  const userPhoto =
     "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop";
+
+  let hasPhoto = false;
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    Swal.fire({
+      title: "Log out !",
+      text: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, log out!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();
+        Swal.fire({
+          title: "Logged out!",
+          title: "You have been logged out Successfully",
+          icon: "success",
+        });
+        navigate("/");
+      }
+    });
   };
 
   return (
@@ -117,28 +138,22 @@ const Header = () => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  {photo ? (
+                  {hasPhoto ? (
                     <img
-                      src={photo}
-                      alt="profile"
-                      width="38"
-                      height="38"
+                      src={userPhoto}
+                      alt={user ? user.charAt(0) : "U"}
+                      width="38px"
+                      height="38px"
                       className="rounded-circle border border-secondary border-opacity-50 shadow-sm"
                     />
                   ) : (
-                    <div
-                      className="rounded-circle text-white d-flex align-items-center justify-content-center border border-secondary border-opacity-50 fw-bold shadow-sm"
-                      style={{
-                        width: "38px",
-                        height: "38px",
-                        fontSize: "0.95rem",
-                        textTransform: "uppercase",
-                        background:
-                          "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
-                      }}
-                    >
-                      {user ? user.charAt(0) : "U"}
-                    </div>
+                    <img
+                      src={defaulticon}
+                      alt={user ? user.charAt(0) : "U"}
+                      width="38px"
+                      height="38px"
+                      className="rounded-circle border border-secondary border-opacity-50 shadow-sm"
+                    />
                   )}
                 </button>
                 <ul
@@ -158,7 +173,7 @@ const Header = () => {
                   <li>
                     <a
                       className="dropdown-item text-black opacity-75 py-2"
-                      href="/profile"
+                      href="#"
                     >
                       Profile Settings
                     </a>
@@ -166,7 +181,7 @@ const Header = () => {
                   <li>
                     <a
                       className="dropdown-item text-black opacity-75 py-2"
-                      href="/settings"
+                      href="#"
                     >
                       Preferences
                     </a>
@@ -176,7 +191,7 @@ const Header = () => {
                   </li>
                   <li>
                     <button
-                      className="dropdown-item text-danger fw-semibold py-2"
+                      className="dropdown-item text-danger fw-semibold py-1"
                       onClick={handleLogout}
                     >
                       Log out
