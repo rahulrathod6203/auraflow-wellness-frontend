@@ -11,8 +11,8 @@ export const login = (userCredentials) =>
 export const storeToken = (token) => localStorage.setItem("token", token);
 export const getToken = () => localStorage.getItem("token");
 
-export const saveLoggedInUser = (email) =>
-  sessionStorage.setItem("authenticatedUser", email);
+export const saveLoggedInUser = (user) =>
+  sessionStorage.setItem("authenticatedUser", user);
 
 export const isUserLoggedIn = (email) => {
   const loggedInUser = sessionStorage.getItem("authenticatedUser");

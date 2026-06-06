@@ -18,6 +18,7 @@ import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
 import UserDashboard from "./components/user/UserDashboard";
 import { isUserLoggedIn } from "./components/auth/AuthService";
+import Contact from "./components/about/Contact";
 
 const App = () => {
   // Simple best-practice guard component for routing
@@ -37,6 +38,7 @@ const App = () => {
       {/* Route Switch Matrix */}
       <Routes>
         <Route path="/" element={<Homepage />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 

@@ -1,24 +1,23 @@
 import React, { useState } from "react";
-import { getToken, login, saveLoggedInUser, storeToken } from "./AuthService";
 import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const Contact = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({
+  const [contactData, setContactData] = useState({
     email: "",
-    password: "",
+    message: "",
   });
 
   const [fieldErrors, setFieldErrors] = useState({
     email: "",
-    password: "",
+    message: "",
   });
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.id]: e.target.value });
+    setContactData({ ...contactData, [e.target.id]: e.target.value });
     if (errorMessage) setErrorMessage("");
 
     if (fieldErrors[e.target.id]) {
@@ -30,50 +29,29 @@ const LoginPage = () => {
     e.preventDefault();
     setSuccessMessage("");
     setErrorMessage("");
-    setFieldErrors({ email: "", password: "" });
+    setFieldErrors({ email: "", message: "" });
 
-    login(userData)
-      .then((response) => {
-        setSuccessMessage(response.data.message || "Login successful!");
-        setUserData({ email: "", password: "" });
+    // Client-side quick email pattern verification validation loop
+    if (!contactData.email.includes("@")) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        email: "Please enter a valid email signature.",
+      }));
+      return;
+    }
 
-        const token = "Bearer " + response.data.token;
-        storeToken(token);
-        getToken(token);
-
-        saveLoggedInUser(response.data.user.name);
-        const userRole = response.data.user.roles;
-        console.log(userRole[0]);
-
-        navigate("/userDashboard");
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response && error.response.data) {
-          console.log(error.response.data);
-
-          const message = error.response.data.message;
-          const backendErrors = error.response.data.fieldErrors;
-
-          if (backendErrors) {
-            setFieldErrors({
-              email: backendErrors.email || "",
-              password: backendErrors.password || "",
-            });
-          }
-
-          setErrorMessage(message || "Login failed. Please check your inputs.");
-        } else {
-          setErrorMessage("Network Error: Server is unreachable.");
-        }
-      });
+    // Success state callback logic execution
+    setSuccessMessage(
+      "Message sent successfully! Our team will respond shortly.",
+    );
+    setContactData({ email: "", message: "" });
   };
 
   return (
     <div
       className="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
       style={{
-        /* Soft, holistic organic design background composition */
+        /* Soft, holistic organic design background composition matching your ecosystem */
         background: `
           radial-gradient(circle at 10% 20%, rgba(255, 64, 129, 0.08) 0%, transparent 40%),
           radial-gradient(circle at 90% 80%, rgba(103, 58, 183, 0.08) 0%, transparent 45%),
@@ -114,126 +92,138 @@ const LoginPage = () => {
           <div
             className="w-100 p-4 p-sm-5 border-0 shadow-lg text-dark bg-white"
             style={{
-              /* Expanded sizing context parameters */
+              /* Sleek, compact profile footprint matching Login & Register setups */
               maxWidth: "540px",
               borderRadius: "24px",
               boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
             }}
           >
             {/* Soft Contrast Branding Header Layout */}
-            <div className="text-center mb-5">
+            <div className="text-center mb-4">
               <h1
                 className="fw-bold d-flex align-items-center justify-content-center gap-2 mb-2"
                 style={{ color: "#2d3748", letterSpacing: "-1px" }}
               >
                 <span style={{ color: "#ff4081" }}>♥️</span>AuraFlow
               </h1>
-              <p className="text-muted small">
-                Sign in to your personalized health & cycle companion
+              <p className="text-muted small mb-1">Contact Support Team</p>
+              <p
+                className="text-muted text-opacity-75"
+                style={{ fontSize: "0.8rem" }}
+              >
+                Have questions? We are here to help you sync up.
               </p>
             </div>
 
             {/* Common Success Message Banner */}
             {successMessage && (
-              <div className="alert alert-success py-2.5 small text-center mb-2 border-0 rounded-3">
+              <div className="alert alert-success py-2.5 small text-center mb-3 border-0 rounded-3">
                 {successMessage}
               </div>
             )}
 
             {/* Fallback Global Error Message Banner */}
             {errorMessage && !Object.values(fieldErrors).some(Boolean) && (
-              <div className="alert alert-danger py-2.5 small text-center mb-2 border-0 rounded-3">
+              <div className="alert alert-danger py-2.5 small text-center mb-3 border-0 rounded-3">
                 {errorMessage}
               </div>
             )}
 
             <form onSubmit={handleSubmit}>
-              {/* Email Address Input Block */}
-              <div className="mb-4">
+              {/* Email Input Box Block */}
+              <div className="mb-3">
                 <label
                   htmlFor="email"
-                  className="form-label fw-semibold small text-secondary mb-2"
+                  className="form-label fw-semibold small text-secondary mb-1"
                 >
                   Email Address
                 </label>
                 <input
                   required
                   type="email"
-                  className={`form-control form-control-lg bg-light border-1 px-3 py-2.5 ${fieldErrors.email ? "is-invalid border border-danger bg-white" : ""}`}
+                  className={`form-control bg-light px-3 py-2 ${fieldErrors.email ? "is-invalid border-danger bg-white" : ""}`}
                   style={{
-                    fontSize: "0.95rem",
+                    fontSize: "0.9rem",
                     borderRadius: "12px",
                     color: "#2d3748",
+                    border: fieldErrors.email
+                      ? ""
+                      : "1.5px solid rgba(255, 64, 129, 0.4)", // Signature pink border line
+                    boxShadow: "none",
                   }}
                   id="email"
                   placeholder="name@example.com"
-                  value={userData.email}
+                  value={contactData.email}
                   onChange={handleChange}
                 />
                 {fieldErrors.email && (
                   <div
-                    className="text-danger small mt-2 ps-1 fw-medium"
-                    style={{ fontSize: "0.82rem" }}
+                    className="text-danger small mt-1 ps-1 fw-medium"
+                    style={{ fontSize: "0.8rem" }}
                   >
                     ⚠️ {fieldErrors.email}
                   </div>
                 )}
               </div>
 
-              {/* Password Input Block */}
+              {/* Message Input Area Block */}
               <div className="mb-4">
                 <label
-                  htmlFor="password"
-                  className="form-label fw-semibold small text-secondary mb-2"
+                  htmlFor="message"
+                  className="form-label fw-semibold small text-secondary mb-1"
                 >
-                  Password
+                  Message
                 </label>
-                <input
+                <textarea
                   required
-                  type="password"
-                  className={`form-control form-control-lg bg-light border-1 px-3 py-2.5 ${fieldErrors.password ? "is-invalid border border-danger bg-white" : ""}`}
+                  rows="3"
+                  className={`form-control bg-light px-3 py-2 ${fieldErrors.message ? "is-invalid border-danger bg-white" : ""}`}
                   style={{
-                    fontSize: "0.95rem",
+                    fontSize: "0.9rem",
                     borderRadius: "12px",
                     color: "#2d3748",
+                    border: fieldErrors.message
+                      ? ""
+                      : "1.5px solid rgba(255, 64, 129, 0.4)", // Signature pink border line
+                    boxShadow: "none",
+                    resize: "none",
                   }}
-                  id="password"
-                  placeholder="••••••••"
-                  value={userData.password}
+                  id="message"
+                  placeholder="Type your message here..."
+                  value={contactData.message}
                   onChange={handleChange}
                 />
-                {fieldErrors.password && (
+                {fieldErrors.message && (
                   <div
-                    className="text-danger small mt-2 ps-1 fw-medium"
-                    style={{ fontSize: "0.82rem" }}
+                    className="text-danger small mt-1 ps-1 fw-medium"
+                    style={{ fontSize: "0.8rem" }}
                   >
-                    ⚠️ {fieldErrors.password}
+                    ⚠️ {fieldErrors.message}
                   </div>
                 )}
               </div>
 
               <button
                 type="submit"
-                className="btn w-100 py-2 fw-bold text-white shadow border-0 rounded-pill"
+                className="btn w-100 py-2.5 fw-bold text-white shadow border-0 rounded-pill"
                 style={{
                   background:
                     "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
-                  fontSize: "1rem",
+                  fontSize: "0.95rem",
                   letterSpacing: "0.3px",
                 }}
               >
-                Sign In
+                Send Message
               </button>
             </form>
 
-            <div className="text-center mt-1 pt-2 border-top border-light">
-              <span className="text-muted small">New to AuraFlow? </span>
+            <div className="text-center  pt-3 border-top border-light">
               <a
-                href="/register"
+                onClick={() => navigate("/")}
                 className="text-decoration-none small fw-bold ms-1"
-                style={{ color: "#ff4081" }}
+                style={{ color: "#ff4081", cursor: "pointer" }}
               >
-                Create your account
+                ← Return to Home
               </a>
             </div>
           </div>
@@ -243,4 +233,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Contact;
