@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const USER_BASE_URL = "http://localhost:8080/api/v1";
+const USER_BASE_URL = "http://18.61.18.107:8080/api/v1";
 
 // User Operations
 

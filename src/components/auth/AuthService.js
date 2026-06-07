@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/api/v1/auth";
+const BASE_URL = "http://18.61.18.107:8080/api/v1/auth";
 
 export const register = (userData) =>
   axios.post(`${BASE_URL}/register`, userData);
