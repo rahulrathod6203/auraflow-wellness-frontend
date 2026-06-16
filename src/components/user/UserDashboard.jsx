@@ -1,26 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { getLoggedInUser, logout } from "../auth/AuthService"; // Imported logout
-import { useNavigate } from "react-router-dom";
+import { getLoggedInUser, logout } from "../auth/AuthService";
+import { useNavigate, Link } from "react-router-dom"; // Added Link
 import Swal from "sweetalert2";
+import { getUserById } from "./UserService";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
-
-  // Hardcoded or fetched user details placeholder
-  const [user, setUser] = useState({
-    name: "Rahul",
-    email: "rahul@example.com",
-    joinedDate: "June 2026",
-  });
-
+  const loggedUserId = getLoggedInUser();
+  const [userData, setUserData] = useState({});
   const [greeting, setGreeting] = useState("Welcome");
+  const [secondsLeft, setSecondsLeft] = useState(15 * 60); // 15 minutes
 
-  // State to track remaining countdown seconds (15 minutes = 900 seconds)
-  const [secondsLeft, setSecondsLeft] = useState(15 * 60);
+  // 1. Fetch User Data Profile
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const fetchedUser = await getUserById(loggedUserId);
+        setUserData(fetchedUser.data);
+        console.log(userData);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
 
-  const loggedUsername = getLoggedInUser().split(" ")[0];
+    if (loggedUserId) {
+      fetchUser();
+    }
+  }, [loggedUserId]);
 
-  // Effect 1: Handle dynamic time-of-day greeting (IST based)
+  useEffect(() => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "This page is under development ⚠️",
+    });
+  }, []);
+
+  // 2. Dynamic Time-of-Day Greeting (IST Based)
   useEffect(() => {
     const istString = new Date().toLocaleString("en-US", {
       timeZone: "Asia/Kolkata",
@@ -39,55 +55,47 @@ const UserDashboard = () => {
     }
   }, []);
 
-  // Effect 2: 15-Minute Countdown Timer & Auto-Logout Sequence
-  useEffect(() => {
-    //load when use logs in
-    //Under maintainance
+  // // 3. Independent Countdown Clock
+  // useEffect(() => {
+  //   if (secondsLeft <= 0) {
+  //     logout();
+  //     navigate("/login");
+  //     return;
+  //   }
 
-    if (secondsLeft == 2) {
-      setTimeout(() => {
-        Swal.fire({
-          icon: "warning",
-          title: "Session Timeout",
-          text: "You are being logged out !, Please sign in again.",
-        });
-      }, 2000);
-    }
-    // If timer reaches zero, trigger logout routine automatically
-    if (secondsLeft <= 0) {
-      logout();
-      navigate("/login");
-      return;
-    }
+  //   const timer = setInterval(() => {
+  //     setSecondsLeft((prev) => prev - 1);
+  //   }, 1000);
 
-    const timer = setInterval(() => {
-      setSecondsLeft((prev) => prev - 1);
-    }, 1000);
+  //   return () => clearInterval(timer);
+  // }, [secondsLeft, navigate]);
 
-    return () => clearInterval(timer);
-  }, [secondsLeft, navigate]);
+  // // 4. Fire Early Notification Modal at exactly 2 seconds left
+  // useEffect(() => {
+  //   if (secondsLeft === 2) {
+  //     Swal.fire({
+  //       icon: "warning",
+  //       title: "Session Timeout",
+  //       text: "You are being logged out! Please sign in again.",
+  //       timer: 2000,
+  //       showConfirmButton: false,
+  //     });
+  //   }
+  // }, [secondsLeft]);
 
-  // Helper function to format seconds into an elegant MM:SS string
-  const formatTimer = (totalSeconds) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-  };
+  // 5. Fixed Development Maintenance Warning Wrapper
 
-  const underMaintainance = () => {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "This page is under development ⚠️",
-    });
-  };
-
-  useEffect(underMaintainance, []);
+  // // Format Helper: MM:SS
+  // const formatTimer = (totalSeconds) => {
+  //   const minutes = Math.floor(totalSeconds / 60);
+  //   const seconds = totalSeconds % 60;
+  //   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  // };
 
   return (
     <div className="bg-light min-vh-100 py-4">
       <div className="container" style={{ paddingTop: "70px" }}>
-        {/* ROW 1: STUNNING HERO WELCOME BANNER */}
+        {/* ROW 1: HERO WELCOME BANNER */}
         <div
           className="row mb-4 rounded-4 p-4 p-md-5 text-white shadow-sm align-items-center"
           style={{
@@ -99,7 +107,7 @@ const UserDashboard = () => {
               🇮🇳 Indian Standard Time (IST)
             </span>
             <h1 className="display-4 fw-bold mb-2">
-              {greeting}, {loggedUsername}!
+              {greeting}, {userData.name?.trim().split(" ")[0] || "User"}!
             </h1>
             <p className="lead opacity-90 mb-0">
               Welcome back to your Aura wellness space. Everything is perfectly
@@ -111,23 +119,25 @@ const UserDashboard = () => {
             style={{ color: "black" }}
           >
             <div className="bg-black bg-opacity-20 backdrop-blur rounded-3 p-2 d-inline-block border border-white border-opacity-25 shadow-sm">
-              <div className="small  tracking-wider opacity-75 text-white mb-1">
-                Session Expires in : {formatTimer(secondsLeft)} Min
+              <div className="small tracking-wider opacity-75 text-white mb-1">
+                Session Expires in : Set 15 Min timer...
               </div>
             </div>
           </div>
         </div>
 
-        {/* ROW 2: ACCOUNT METRIC OVERVIEW CARDS */}
+        {/* ROW 2: OVERVIEW CARDS */}
         <div className="row g-4 mb-4">
           <div className="col-12 col-sm-6 col-md-3">
             <div className="card h-100 border-0 shadow-sm p-3 rounded-3">
               <div className="d-flex align-items-center justify-content-between mb-2">
-                <span className="text-muted small uppercase fw-bold">
+                <span className="text-muted small text-uppercase fw-bold">
                   Profile Status
                 </span>
-                <span className="badge bg-success-subtle text-success rounded-pill px-2">
-                  Active
+                <span
+                  className={`badge rounded-pill px-2 ${userData.active ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger"}`}
+                >
+                  {userData.active ? "Active" : "Inactive"}
                 </span>
               </div>
               <h4 className="fw-bold m-0 text-dark">Verified</h4>
@@ -138,7 +148,7 @@ const UserDashboard = () => {
           <div className="col-12 col-sm-6 col-md-3">
             <div className="card h-100 border-0 shadow-sm p-3 rounded-3">
               <div className="d-flex align-items-center justify-content-between mb-2">
-                <span className="text-muted small uppercase fw-bold">
+                <span className="text-muted small text-uppercase fw-bold">
                   Wellness Cycle
                 </span>
                 <span className="text-primary fs-5">✨</span>
@@ -151,7 +161,7 @@ const UserDashboard = () => {
           <div className="col-12 col-sm-6 col-md-3">
             <div className="card h-100 border-0 shadow-sm p-3 rounded-3">
               <div className="d-flex align-items-center justify-content-between mb-2">
-                <span className="text-muted small uppercase fw-bold">
+                <span className="text-muted small text-uppercase fw-bold">
                   Logged Symptoms
                 </span>
                 <span className="text-warning fs-5">📋</span>
@@ -164,20 +174,21 @@ const UserDashboard = () => {
           <div className="col-12 col-sm-6 col-md-3">
             <div className="card h-100 border-0 shadow-sm p-3 rounded-3">
               <div className="d-flex align-items-center justify-content-between mb-2">
-                <span className="text-muted small uppercase fw-bold">
+                <span className="text-muted small text-uppercase fw-bold">
                   Member Since
                 </span>
                 <span className="text-info fs-5">📅</span>
               </div>
-              <h4 className="fw-bold m-0 text-dark">{user.joinedDate}</h4>
+              <h4 className="fw-bold m-0 text-dark">
+                {userData.createdAt?.trim().split(" ")[0] || "N/A"}
+              </h4>
               <p className="text-muted small m-0 mt-1">Premium Tier Account</p>
             </div>
           </div>
         </div>
 
-        {/* ROW 3: QUICK WORKSPACE CONTENT MANAGEMENT AREA */}
+        {/* ROW 3: WORKSPACE CONTENT */}
         <div className="row g-4">
-          {/* Main Dashboard Panel */}
           <div className="col-md-8">
             <div className="card border-0 shadow-sm p-4 rounded-3 h-100">
               <h5 className="fw-bold text-dark mb-3">Your Wellness Insights</h5>
@@ -203,32 +214,33 @@ const UserDashboard = () => {
             </div>
           </div>
 
-          {/* Quick Shortcuts Side Panel */}
+          {/* Quick Shortcuts Side Panel (Now Using React Router Links) */}
           <div className="col-md-4">
             <div className="card border-0 shadow-sm p-4 rounded-3 h-100">
               <h5 className="fw-bold text-dark mb-3">Quick Actions</h5>
               <div className="list-group list-group-flush">
-                <a
-                  href="#"
+                <Link
+                  to="/profile"
+                  state={{ user: userData }}
                   className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between"
                 >
                   <span>👤 Edit Profile Options</span>
                   <span className="text-muted small">→</span>
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  to="/settings"
                   className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between"
                 >
                   <span>⚙️ Account Settings</span>
                   <span className="text-muted small">→</span>
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  to="/privacy"
                   className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between"
                 >
                   <span>🛡️ Security & Privacy</span>
                   <span className="text-muted small">→</span>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

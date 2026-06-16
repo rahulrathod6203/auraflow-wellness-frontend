@@ -43,11 +43,9 @@ const LoginPage = () => {
 
         const token = "Bearer " + response.data.token;
         storeToken(token);
-        getToken(token);
 
-        saveLoggedInUser(response.data.user.name);
-        const userRole = response.data.user.roles;
-        console.log(userRole[0]);
+        saveLoggedInUser(response.data.user.id);
+        console.log(response.data.user.id);
 
         navigate("/userDashboard");
       })

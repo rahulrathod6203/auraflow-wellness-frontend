@@ -1,15 +1,20 @@
 import axios from "axios";
+import { getToken } from "../auth/AuthService";
 
-const USER_BASE_URL = "http://18.61.18.107:8080/api/v1";
+const BASE_URL = "http://localhost:8080/api/v1/user";
 
-// User Operations
+axios.interceptors.request.use(
+  function (config) {
+    // Do something before request is sent
+    config.headers["Authorization"] = getToken();
+    return config;
+  },
+  function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  },
+);
 
-axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
-
-export const getUserById = (id) => axios.get(`${USER_BASE_URL}/users/${id}`);
-export const updateUser = (id, data) =>
-  axios.put(`${USER_BASE_URL}/users/${id}`, data);
+export const getUserById = (id) => {
+  return axios.get(`${BASE_URL}/${id}`);
+};

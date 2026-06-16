@@ -19,6 +19,7 @@ import RegisterPage from "./components/auth/RegisterPage";
 import UserDashboard from "./components/user/UserDashboard";
 import { isUserLoggedIn } from "./components/auth/AuthService";
 import Contact from "./components/about/Contact";
+import Profile from "./components/user/Profile";
 
 const App = () => {
   // Simple best-practice guard component for routing
@@ -48,6 +49,15 @@ const App = () => {
           element={
             <AuthenticatedRoute>
               <UserDashboard />
+            </AuthenticatedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <AuthenticatedRoute>
+              <Profile />
             </AuthenticatedRoute>
           }
         />
