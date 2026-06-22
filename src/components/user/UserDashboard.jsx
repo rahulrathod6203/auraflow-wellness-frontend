@@ -79,7 +79,7 @@ const UserDashboard = () => {
           <div className="col-md-4 text-center text-md-end mt-3 mt-md-0 p-0">
             <div className="bg-white bg-opacity-10 rounded-2 p-2 px-3 d-inline-block border border-white border-opacity-10">
               <div className="small text-dark-50 fw-medium">
-                Session Status: Secure Link
+                Session timeout in : 00:00 minutes
               </div>
             </div>
           </div>
@@ -271,17 +271,23 @@ const UserDashboard = () => {
           </div>
         </div>
       </div>
-
       {/* ================= FLOATING DYNAMIC CHAT POPUP WIDGET ================= */}
+      {/* ================= FLOATING CHATBOT ICON & WINDOW ================= */}
       <div
-        className="position-fixed bottom-0 end-0 m-4 d-flex flex-column align-items-end"
+        className="position-fixed bottom-0 end-0 m-4 d-flex align-items-center gap-3 position-relative"
         style={{ zIndex: 1050 }}
       >
-        {/* Dynamic Logged-in Chat Container Box */}
+        {/* Dynamic Logged-in Chat Container Box (Positioned absolutely above the button) */}
         {chatOpen && (
           <div
-            className="card border-0 shadow-lg bg-white mb-3 text-start d-flex flex-column overflow-hidden"
-            style={{ width: "340px", height: "400px", borderRadius: "12px" }}
+            className="card border-0 shadow-lg bg-dark text-start d-flex flex-column overflow-hidden position-absolute"
+            style={{
+              width: "340px",
+              height: "450px",
+              borderRadius: "12px",
+              bottom: "70px", // Sits exactly above the 56px button + spacing
+              right: "0", // Aligns perfectly with the right edge of the button
+            }}
           >
             {/* Header Plate */}
             <div className="p-3 bg-dark text-white d-flex align-items-center justify-content-between">
@@ -303,7 +309,7 @@ const UserDashboard = () => {
               style={{ fontSize: "0.85rem" }}
             >
               <div
-                className="bg-white p-2.5 mb-2 rounded shadow-sm text-secondary border border-light-subtle"
+                className="bg-dark p-3 mb-2 rounded shadow-sm text-white border-1 border-dark-subtle"
                 style={{ maxWidth: "85%" }}
               >
                 Hello {userData.name?.trim().split(" ")[0] || "User"}! I am
@@ -317,8 +323,11 @@ const UserDashboard = () => {
               <input
                 type="text"
                 placeholder="Ask AuraAI..."
-                className="form-control form-control-sm bg-light border-0 px-2"
-                style={{ borderRadius: "6px", fontSize: "0.85rem" }}
+                className="form-control form-control-sm bg-light border-1 px-2"
+                style={{
+                  borderRadius: "6px",
+                  fontSize: "0.85rem",
+                }}
               />
               <button
                 className="btn btn-dark btn-sm px-3 fw-medium"
@@ -330,6 +339,11 @@ const UserDashboard = () => {
           </div>
         )}
 
+        {/* Text label to the left of the button */}
+        <span className="text-secondary small fw-medium px-1">
+          Chat with AuraAI
+        </span>
+
         {/* Floating Bubble Button Trigger */}
         <button
           onClick={() => setChatOpen(!chatOpen)}
@@ -339,6 +353,7 @@ const UserDashboard = () => {
             height: "56px",
             backgroundColor: "#1a1a1a",
             transition: "transform 0.2s ease",
+            flexShrink: 0, // Prevents the button from shrinking
           }}
           title="Chat with AuraAI"
           onMouseEnter={(e) =>
@@ -349,6 +364,7 @@ const UserDashboard = () => {
           <span style={{ fontSize: "1.5rem" }}>🤖</span>
         </button>
       </div>
+      →
     </div>
   );
 };

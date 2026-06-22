@@ -131,9 +131,14 @@ const HomePage = () => {
 
       {/* ================= SIMPLIFIED FLOATING CHATBOT ICON ================= */}
       <div
-        className="position-fixed bottom-0 end-0 m-4"
+        className="position-fixed bottom-0 end-0 m-4 d-flex align-items-center gap-2"
         style={{ zIndex: 1050 }}
       >
+        {/* Simple text element next to the icon */}
+        <span className="text-secondary small fw-medium px-1">
+          Chat with AuraAI
+        </span>
+
         <div
           className="btn btn-dark rounded-pill shadow-lg p-0 d-flex align-items-center justify-content-center border border-secondary border-opacity-25"
           style={{

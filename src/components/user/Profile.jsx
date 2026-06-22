@@ -109,59 +109,17 @@ function Profile() {
         paddingTop: "90px",
       }}
     >
-      <div className="container" style={{ maxWidth: "880px" }}>
-        {/* Admin Dashboard Banner Component */}
-        {isAdmin && (
-          <div
-            className="alert border-0 p-4 shadow-sm mb-4 d-flex align-items-center justify-content-between text-white"
-            style={{
-              backgroundColor: "#1a1a1a",
-              borderRadius: "12px",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-            }}
-          >
-            <div className="d-flex align-items-center gap-3">
-              <span
-                className="fw-bold text-white-50"
-                style={{ fontSize: "1.1rem" }}
-              >
-                ⬢
-              </span>
-              <div>
-                <strong
-                  className="text-white d-block mb-05"
-                  style={{ fontSize: "1rem", letterSpacing: "-0.2px" }}
-                >
-                  Administrative Portal
-                </strong>
-                <span
-                  className="text-white-50 small"
-                  style={{ fontSize: "0.85rem" }}
-                >
-                  You are viewing this profile workspace with global write
-                  privileges.
-                </span>
-              </div>
-            </div>
-            <span
-              className="badge text-uppercase px-2.5 py-1.5 rounded-1 fw-bold"
-              style={{
-                fontSize: "0.75rem",
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                color: "#ffffff",
-                border: "1px solid rgba(255, 255, 255, 0.15)",
-              }}
-            >
-              Sys Admin
-            </span>
-          </div>
-        )}
-
+      <div
+        className="container"
+        style={{
+          maxWidth: "880px",
+        }}
+      >
         <div className="row g-4">
           {/* Left Column: Summary Info Profile Plate */}
-          <div className="col-12 col-md-4">
+          <div className="col-12 col-md-4 ">
             <div
-              className="card border-0 shadow-sm p-4 text-center bg-white h-100"
+              className="card border-1 shadow-sm p-4 text-center bg-white h-100"
               style={{ borderRadius: "12px" }}
             >
               <div className="d-flex flex-column align-items-center justify-content-center h-100">
@@ -181,7 +139,7 @@ function Profile() {
                   {profileData.email || "Loading..."}
                 </p>
 
-                <span className="badge bg-light text-dark border border-light-subtle px-3 py-1.5 rounded-pill mb-2 small fw-medium">
+                <span className="badge bg-dark text-white border border-light-subtle px-4  py-2 rounded-pill mb-2 small fw-medium">
                   {isAdmin ? "Admin Access" : "Standard Account"}
                 </span>
 
@@ -200,7 +158,7 @@ function Profile() {
           {/* Right Column: Profile Mutation Core Input Form */}
           <div className="col-12 col-md-8">
             <div
-              className="card border-0 shadow-sm p-4 bg-white mb-4"
+              className="card border-1 shadow-sm p-4 bg-white mb-4"
               style={{ borderRadius: "12px" }}
             >
               <div className="card-body p-0">
