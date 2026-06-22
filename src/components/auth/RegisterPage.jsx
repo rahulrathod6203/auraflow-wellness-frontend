@@ -12,7 +12,6 @@ const RegisterPage = () => {
     address: "",
   });
 
-  // Individual field error states
   const [fieldErrors, setFieldErrors] = useState({
     name: "",
     email: "",
@@ -23,11 +22,11 @@ const RegisterPage = () => {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // UI State handling for form submissions
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.id]: e.target.value });
     if (errorMessage) setErrorMessage("");
-    // Clear the individual field error when the user begins retyping
     if (fieldErrors[e.target.id]) {
       setFieldErrors({ ...fieldErrors, [e.target.id]: "" });
     }
@@ -43,10 +42,12 @@ const RegisterPage = () => {
       password: "",
       phone: "",
       address: "",
-    }); // Reset field errors
+    });
+    setIsLoading(true);
 
     register(userData)
       .then((response) => {
+        setIsLoading(false);
         setSuccessMessage(response.data.message || "Registration successful!");
         setUserData({
           name: "",
@@ -57,10 +58,8 @@ const RegisterPage = () => {
         });
       })
       .catch((error) => {
-        console.log(error);
+        setIsLoading(false);
         if (error.response && error.response.data) {
-          console.log(error.response.data);
-
           const message = error.response.data.message;
           const backendErrors = error.response.data.fieldErrors;
 
@@ -73,302 +72,238 @@ const RegisterPage = () => {
               address: backendErrors.address || "",
             });
           }
-
           setErrorMessage(
             message || "Registration failed. Please check your inputs.",
           );
         } else {
-          setErrorMessage("Network Error: Server is unreachable.");
+          setErrorMessage("Network Error: The server is unreachable.");
         }
       });
   };
 
-  const closeForm = () => {
-    navigate("/");
-  };
-
   return (
     <div
-      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
+      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light"
       style={{
-        /* Soft, holistic organic design background composition matching LoginPage */
-        background: `
-          radial-gradient(circle at 10% 20%, rgba(255, 64, 129, 0.08) 0%, transparent 40%),
-          radial-gradient(circle at 90% 80%, rgba(103, 58, 183, 0.08) 0%, transparent 45%),
-          radial-gradient(circle at 50% 0%, rgba(224, 242, 241, 0.6) 0%, transparent 50%),
-          #f4f6f5
-        `,
-        paddingTop: "70px",
+        fontFamily: "'Inter', system-ui, sans-serif",
+        padding: "40px 0",
       }}
     >
-      {/* Background Decorative Floral/Abstract Elements representing wellness shapes */}
       <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{ top: "15%", left: "10%", fontSize: "5rem" }}
+        className="w-100"
+        style={{
+          maxWidth: "520px",
+          padding: "20px",
+          border: "0.4px solid",
+          borderRadius: "12px",
+        }}
       >
-        🌿
-      </div>
-      <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{ bottom: "15%", right: "12%", fontSize: "5rem" }}
-      >
-        🌸
-      </div>
-      <div
-        className="position-absolute opacity-10 d-none d-lg-block"
-        style={{ bottom: "20%", left: "15%", fontSize: "6rem" }}
-      >
-        ✨
-      </div>
-      <div
-        className="position-absolute opacity-15 d-none d-lg-block"
-        style={{ top: "20%", right: "15%", fontSize: "4rem" }}
-      >
-        🎯
-      </div>
+        {/* Minimal Branding */}
+        <div className="text-center mb-4">
+          <h2 className="fw-bold tracking-tight text-dark mb-1">
+            Create your account
+          </h2>
+          <p className="text-muted small">
+            Track your cycles. Understand your body.
+          </p>
+        </div>
 
-      <div className="container position-relative" style={{ zIndex: 1 }}>
-        <div className="d-flex justify-content-center">
+        {/* Global Feedback Banners */}
+        {successMessage && (
           <div
-            className="w-100 p-4 p-sm-5 border-0 shadow-lg text-dark bg-white position-relative" // Added position-relative here
-            style={{
-              /* Expanded sizing context parameters */
-              maxWidth: "540px",
-              borderRadius: "24px",
-              boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
-            }}
+            className="alert alert-success border-0 small text-center mb-3 py-2"
+            role="alert"
           >
-            <button
-              onClick={closeForm}
-              className="btn btn-link position-absolute top-0 end-0 m-3 p-2 text-decoration-none text-muted"
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "bold",
-                lineHeight: "1",
-              }}
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            {/* Soft Contrast Branding Header Layout */}
-            <div className="text-center mb-5">
-              <h1
-                className="fw-bold d-flex align-items-center justify-content-center gap-2 mb-2"
-                style={{ color: "#2d3748", letterSpacing: "-1px" }}
-              >
-                <span style={{ color: "#ff4081" }}>♥️</span>AuraFlow
-              </h1>
+            {successMessage}
+          </div>
+        )}
 
-              <p
-                className="text-muted text-opacity-75"
-                style={{ fontSize: "0.8rem" }}
-              >
-                Track your cycles. Understand your body.
-              </p>
-            </div>
+        {errorMessage && !Object.values(fieldErrors).some(Boolean) && (
+          <div
+            className="alert alert-danger border-0 small text-center mb-3 py-2"
+            role="alert"
+          >
+            {errorMessage}
+          </div>
+        )}
 
-            {/* Common Success Message Banner */}
-            {successMessage && (
-              <div className="alert alert-success py-2.5 small text-center mb-3 border-0 rounded-3">
-                {successMessage}
-              </div>
-            )}
-
-            {/* Fallback Global Error Message Banner */}
-            {errorMessage && !Object.values(fieldErrors).some(Boolean) && (
-              <div className="alert alert-danger py-2.5 small text-center mb-3 border-0 rounded-3">
-                {errorMessage}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit}>
-              {/* Row 1: Name and Email side-by-side */}
-              <div className="row g-3 mb-3">
-                <div className="col-12 col-sm-6">
-                  <label
-                    htmlFor="name"
-                    className="form-label fw-semibold small text-secondary mb-1"
-                  >
-                    Full Name
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    className={`form-control bg-light border-1 px-3 py-2 ${fieldErrors.name ? "is-invalid border border-danger bg-white" : ""}`}
-                    style={{
-                      fontSize: "0.9rem",
-                      borderRadius: "12px",
-                      color: "#2d3748",
-                    }}
-                    id="name"
-                    placeholder="Full name"
-                    value={userData.name}
-                    onChange={handleChange}
-                  />
-                  {fieldErrors.name && (
-                    <div
-                      className="text-danger small mt-1 ps-1 fw-medium"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      ⚠️ {fieldErrors.name}
-                    </div>
-                  )}
-                </div>
-                <div className="col-12 col-sm-6">
-                  <label
-                    htmlFor="email"
-                    className="form-label fw-semibold small text-secondary mb-1"
-                  >
-                    Email address
-                  </label>
-                  <input
-                    required
-                    type="email"
-                    className={`form-control bg-light border-1 px-3 py-2 ${fieldErrors.email ? "is-invalid border border-danger bg-white" : ""}`}
-                    style={{
-                      fontSize: "0.9rem",
-                      borderRadius: "12px",
-                      color: "#2d3748",
-                    }}
-                    id="email"
-                    placeholder="Email"
-                    value={userData.email}
-                    onChange={handleChange}
-                  />
-                  {fieldErrors.email && (
-                    <div
-                      className="text-danger small mt-1 ps-1 fw-medium"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      ⚠️ {fieldErrors.email}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Row 2: Password and Phone side-by-side */}
-              <div className="row g-3 mb-3">
-                <div className="col-12 col-sm-6">
-                  <label
-                    htmlFor="password"
-                    className="form-label fw-semibold small text-secondary mb-1"
-                  >
-                    Password
-                  </label>
-                  <input
-                    required
-                    type="password"
-                    className={`form-control bg-light border-1 px-3 py-2 ${fieldErrors.password ? "is-invalid border border-danger bg-white" : ""}`}
-                    style={{
-                      fontSize: "0.9rem",
-                      borderRadius: "12px",
-                      color: "#2d3748",
-                    }}
-                    id="password"
-                    placeholder="••••••••"
-                    value={userData.password}
-                    onChange={handleChange}
-                  />
-                  {fieldErrors.password && (
-                    <div
-                      className="text-danger small mt-1 ps-1 fw-medium"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      ⚠️ {fieldErrors.password}
-                    </div>
-                  )}
-                </div>
-                <div className="col-12 col-sm-6">
-                  <label
-                    htmlFor="phone"
-                    className="form-label fw-semibold small text-secondary mb-1"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    required
-                    type="tel"
-                    className={`form-control bg-light border-1 px-3 py-2 ${fieldErrors.phone ? "is-invalid border border-danger bg-white" : ""}`}
-                    style={{
-                      fontSize: "0.9rem",
-                      borderRadius: "12px",
-                      color: "#2d3748",
-                    }}
-                    id="phone"
-                    placeholder="Phone"
-                    value={userData.phone}
-                    onChange={handleChange}
-                  />
-                  {fieldErrors.phone && (
-                    <div
-                      className="text-danger small mt-1 ps-1 fw-medium"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      ⚠️ {fieldErrors.phone}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Row 3: Address (Full Width) */}
-              <div className="mb-4">
+        {/* Register Card */}
+        <div
+          className="card border-0 shadow-sm p-4 bg-white"
+          style={{ borderRadius: "12px" }}
+        >
+          <form onSubmit={handleSubmit} noValidate>
+            {/* Row 1: Name and Email */}
+            <div className="row g-3 mb-3">
+              <div className="col-12 col-sm-6">
                 <label
-                  htmlFor="address"
-                  className="form-label fw-semibold small text-secondary mb-1"
+                  htmlFor="name"
+                  className="form-label small fw-medium text-secondary"
                 >
-                  Address
+                  Full Name
                 </label>
                 <input
                   required
                   type="text"
-                  className={`form-control bg-light border-1 px-3 py-2 ${fieldErrors.address ? "is-invalid border border-danger bg-white" : ""}`}
-                  style={{
-                    fontSize: "0.9rem",
-                    borderRadius: "12px",
-                    color: "#2d3748",
-                  }}
-                  id="address"
-                  placeholder="Street address, apartment, or suite"
-                  value={userData.address}
+                  id="name"
+                  className={`form-control ${fieldErrors.name ? "is-invalid" : ""}`}
+                  placeholder="Jane Doe"
+                  value={userData.name}
                   onChange={handleChange}
+                  disabled={isLoading}
+                  style={{ borderRadius: "6px", fontSize: "0.95rem" }}
                 />
-                {fieldErrors.address && (
-                  <div
-                    className="text-danger small mt-1 ps-1 fw-medium"
-                    style={{ fontSize: "0.8rem" }}
-                  >
-                    ⚠️ {fieldErrors.address}
+                {fieldErrors.name && (
+                  <div className="invalid-feedback small mt-1">
+                    {fieldErrors.name}
                   </div>
                 )}
               </div>
 
-              <button
-                type="submit"
-                className="btn w-100 py-2.5 fw-bold text-white shadow border-0 rounded-pill"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
-                  fontSize: "1rem",
-                  letterSpacing: "0.3px",
-                }}
-              >
-                Sign Up
-              </button>
-            </form>
-
-            <div className="text-center mt-2 pt-2 border-top border-light">
-              <span className="text-muted small">
-                Already have an account?{" "}
-              </span>
-              <a
-                href="/login"
-                className="text-decoration-none small fw-bold ms-1"
-                style={{ color: "#ff4081" }}
-              >
-                Login
-              </a>
+              <div className="col-12 col-sm-6">
+                <label
+                  htmlFor="email"
+                  className="form-label small fw-medium text-secondary"
+                >
+                  Email address
+                </label>
+                <input
+                  required
+                  type="email"
+                  id="email"
+                  className={`form-control ${fieldErrors.email ? "is-invalid" : ""}`}
+                  placeholder="you@example.com"
+                  value={userData.email}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+                />
+                {fieldErrors.email && (
+                  <div className="invalid-feedback small mt-1">
+                    {fieldErrors.email}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+
+            {/* Row 2: Password and Phone */}
+            <div className="row g-3 mb-3">
+              <div className="col-12 col-sm-6">
+                <label
+                  htmlFor="password"
+                  className="form-label small fw-medium text-secondary"
+                >
+                  Password
+                </label>
+                <input
+                  required
+                  type="password"
+                  id="password"
+                  className={`form-control ${fieldErrors.password ? "is-invalid" : ""}`}
+                  placeholder="••••••••"
+                  value={userData.password}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+                />
+                {fieldErrors.password && (
+                  <div className="invalid-feedback small mt-1">
+                    {fieldErrors.password}
+                  </div>
+                )}
+              </div>
+
+              <div className="col-12 col-sm-6">
+                <label
+                  htmlFor="phone"
+                  className="form-label small fw-medium text-secondary"
+                >
+                  Phone Number
+                </label>
+                <input
+                  required
+                  type="tel"
+                  id="phone"
+                  className={`form-control ${fieldErrors.phone ? "is-invalid" : ""}`}
+                  placeholder="1234567890"
+                  value={userData.phone}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+                />
+                {fieldErrors.phone && (
+                  <div className="invalid-feedback small mt-1">
+                    {fieldErrors.phone}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Row 3: Address */}
+            <div className="mb-4">
+              <label
+                htmlFor="address"
+                className="form-label small fw-medium text-secondary"
+              >
+                Address
+              </label>
+              <input
+                required
+                type="text"
+                id="address"
+                className={`form-control ${fieldErrors.address ? "is-invalid" : ""}`}
+                placeholder="Street address, apartment, or suite"
+                value={userData.address}
+                onChange={handleChange}
+                disabled={isLoading}
+                style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+              />
+              {fieldErrors.address && (
+                <div className="invalid-feedback small mt-1">
+                  {fieldErrors.address}
+                </div>
+              )}
+            </div>
+
+            {/* Action Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn btn-dark w-100 py-2.5 fw-medium d-flex align-items-center justify-content-center gap-2"
+              style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+            >
+              {isLoading ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    aria-hidden="true"
+                  ></span>
+                  <span>Creating account...</span>
+                </>
+              ) : (
+                "Sign Up"
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* Bottom Navigation Links */}
+        <div className="text-center mt-4">
+          <p className="text-muted small mb-0">
+            Already have an account?{" "}
+            <a
+              href="/login"
+              className="text-dark fw-medium text-decoration-none border-bottom border-secondary"
+            >
+              Login
+            </a>
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="btn btn-link btn-sm text-muted text-decoration-none mt-2"
+          >
+            ← Back to homepage
+          </button>
         </div>
       </div>
     </div>

@@ -16,18 +16,14 @@ const LoginPage = () => {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Showcase UI state handling
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.id]: e.target.value });
     if (errorMessage) setErrorMessage("");
-
     if (fieldErrors[e.target.id]) {
       setFieldErrors({ ...fieldErrors, [e.target.id]: "" });
     }
-  };
-
-  const closeForm = () => {
-    navigate("/");
   };
 
   const handleSubmit = (e) => {
@@ -35,9 +31,11 @@ const LoginPage = () => {
     setSuccessMessage("");
     setErrorMessage("");
     setFieldErrors({ email: "", password: "" });
+    setIsLoading(true);
 
     login(userData)
       .then((response) => {
+        setIsLoading(false);
         setSuccessMessage(response.data.message || "Login successful!");
         setUserData({ email: "", password: "" });
 
@@ -45,15 +43,11 @@ const LoginPage = () => {
         storeToken(token);
 
         saveLoggedInUser(response.data.user.id);
-        console.log(response.data.user.id);
-
         navigate("/userDashboard");
       })
       .catch((error) => {
-        console.log(error);
+        setIsLoading(false);
         if (error.response && error.response.data) {
-          console.log(error.response.data);
-
           const message = error.response.data.message;
           const backendErrors = error.response.data.fieldErrors;
 
@@ -63,194 +57,155 @@ const LoginPage = () => {
               password: backendErrors.password || "",
             });
           }
-
-          setErrorMessage(message || "Login failed. Please check your inputs.");
+          setErrorMessage(message || "Invalid email or password.");
         } else {
-          setErrorMessage("Network Error: Server is unreachable.");
+          setErrorMessage("Network Error: The server is unreachable.");
         }
       });
   };
 
   return (
     <div
-      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
-      style={{
-        /* Soft, holistic organic design background composition */
-        background: `
-          radial-gradient(circle at 10% 20%, rgba(255, 64, 129, 0.08) 0%, transparent 40%),
-          radial-gradient(circle at 90% 80%, rgba(103, 58, 183, 0.08) 0%, transparent 45%),
-          radial-gradient(circle at 50% 0%, rgba(224, 242, 241, 0.6) 0%, transparent 50%),
-          #f4f6f5
-        `,
-        paddingTop: "60px",
-      }}
+      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light"
+      style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
-      {/* Background Decorative Floral/Abstract Elements representing wellness shapes */}
       <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{ top: "15%", left: "10%", fontSize: "5rem" }}
+        className="w-100"
+        style={{
+          maxWidth: "520px",
+          padding: "20px",
+          border: "0.4px solid",
+          borderRadius: "12px",
+        }}
       >
-        🌿
-      </div>
-      <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{ bottom: "15%", right: "12%", fontSize: "5rem" }}
-      >
-        🌸
-      </div>
-      <div
-        className="position-absolute opacity-10 d-none d-lg-block"
-        style={{ bottom: "20%", left: "15%", fontSize: "6rem" }}
-      >
-        ✨
-      </div>
-      <div
-        className="position-absolute opacity-15 d-none d-lg-block"
-        style={{ top: "20%", right: "15%", fontSize: "4rem" }}
-      >
-        🎯
-      </div>
+        {/* Minimal Branding */}
+        <div className="text-center mb-4">
+          <h2 className="fw-bold tracking-tight text-dark mb-1">
+            Sign in to AuraFlow
+          </h2>
+          <p className="text-muted small">
+            Enter your credentials to access your account
+          </p>
+        </div>
 
-      <div className="container position-relative" style={{ zIndex: 1 }}>
-        <div className="d-flex justify-content-center">
+        {/* Global Feedback Banners */}
+        {successMessage && (
           <div
-            className="w-100 p-4 p-sm-5 border-0 shadow-lg text-dark bg-white position-relative" // Added position-relative here
-            style={{
-              /* Expanded sizing context parameters */
-              maxWidth: "540px",
-              borderRadius: "24px",
-              boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
-            }}
+            className="alert alert-success border-0 small text-center mb-3 py-2"
+            role="alert"
           >
-            <button
-              onClick={closeForm}
-              className="btn btn-link position-absolute top-0 end-0 m-3 p-2 text-decoration-none text-muted"
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "bold",
-                lineHeight: "1",
-              }}
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            {/* Soft Contrast Branding Header Layout */}
-            <div className="text-center mb-5">
-              <h1
-                className="fw-bold d-flex align-items-center justify-content-center gap-2 mb-2"
-                style={{ color: "#2d3748", letterSpacing: "-1px" }}
+            {successMessage}
+          </div>
+        )}
+
+        {errorMessage && !Object.values(fieldErrors).some(Boolean) && (
+          <div
+            className="alert alert-danger border-0 small text-center mb-3 py-2"
+            role="alert"
+          >
+            {errorMessage}
+          </div>
+        )}
+
+        {/* Auth Card */}
+        <div
+          className="card border-0 shadow-sm p-4 bg-white"
+          style={{ borderRadius: "12px" }}
+        >
+          <form onSubmit={handleSubmit} noValidate>
+            {/* Email Field */}
+            <div className="mb-3">
+              <label
+                htmlFor="email"
+                className="form-label small fw-medium text-secondary"
               >
-                <span style={{ color: "#ff4081" }}>♥️</span>AuraFlow
-              </h1>
-              <p className="text-muted small">
-                Sign in to your personalized health & cycle companion
-              </p>
+                Email address
+              </label>
+              <input
+                required
+                type="email"
+                id="email"
+                className={`form-control ${fieldErrors.email ? "is-invalid" : ""}`}
+                placeholder="you@example.com"
+                value={userData.email}
+                onChange={handleChange}
+                disabled={isLoading}
+                style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+              />
+              {fieldErrors.email && (
+                <div className="invalid-feedback small mt-1">
+                  {fieldErrors.email}
+                </div>
+              )}
             </div>
 
-            {/* Common Success Message Banner */}
-            {successMessage && (
-              <div className="alert alert-success py-2.5 small text-center mb-2 border-0 rounded-3">
-                {successMessage}
-              </div>
-            )}
-
-            {/* Fallback Global Error Message Banner */}
-            {errorMessage && !Object.values(fieldErrors).some(Boolean) && (
-              <div className="alert alert-danger py-2.5 small text-center mb-2 border-0 rounded-3">
-                {errorMessage}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit}>
-              {/* Email Address Input Block */}
-              <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="form-label fw-semibold small text-secondary mb-2"
-                >
-                  Email Address
-                </label>
-                <input
-                  required
-                  type="email"
-                  className={`form-control form-control-lg bg-light border-1 px-3 py-2.5 ${fieldErrors.email ? "is-invalid border border-danger bg-white" : ""}`}
-                  style={{
-                    fontSize: "0.95rem",
-                    borderRadius: "12px",
-                    color: "#2d3748",
-                  }}
-                  id="email"
-                  placeholder="name@example.com"
-                  value={userData.email}
-                  onChange={handleChange}
-                />
-                {fieldErrors.email && (
-                  <div
-                    className="text-danger small mt-2 ps-1 fw-medium"
-                    style={{ fontSize: "0.82rem" }}
-                  >
-                    ⚠️ {fieldErrors.email}
-                  </div>
-                )}
-              </div>
-
-              {/* Password Input Block */}
-              <div className="mb-4">
+            {/* Password Field */}
+            <div className="mb-4">
+              <div className="d-flex justify-content-between align-items-center mb-1">
                 <label
                   htmlFor="password"
-                  className="form-label fw-semibold small text-secondary mb-2"
+                  className="form-label small fw-medium text-secondary mb-0"
                 >
                   Password
                 </label>
-                <input
-                  required
-                  type="password"
-                  className={`form-control form-control-lg bg-light border-1 px-3 py-2.5 ${fieldErrors.password ? "is-invalid border border-danger bg-white" : ""}`}
-                  style={{
-                    fontSize: "0.95rem",
-                    borderRadius: "12px",
-                    color: "#2d3748",
-                  }}
-                  id="password"
-                  placeholder="••••••••"
-                  value={userData.password}
-                  onChange={handleChange}
-                />
-                {fieldErrors.password && (
-                  <div
-                    className="text-danger small mt-2 ps-1 fw-medium"
-                    style={{ fontSize: "0.82rem" }}
-                  >
-                    ⚠️ {fieldErrors.password}
-                  </div>
-                )}
               </div>
-
-              <button
-                type="submit"
-                className="btn w-100 py-2 fw-bold text-white shadow border-0 rounded-pill"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
-                  fontSize: "1rem",
-                  letterSpacing: "0.3px",
-                }}
-              >
-                Sign In
-              </button>
-            </form>
-
-            <div className="text-center mt-1 pt-2 border-top border-light">
-              <span className="text-muted small">New to AuraFlow? </span>
-              <a
-                href="/register"
-                className="text-decoration-none small fw-bold ms-1"
-                style={{ color: "#ff4081" }}
-              >
-                Create your account
-              </a>
+              <input
+                required
+                type="password"
+                id="password"
+                className={`form-control ${fieldErrors.password ? "is-invalid" : ""}`}
+                placeholder="••••••••"
+                value={userData.password}
+                onChange={handleChange}
+                disabled={isLoading}
+                style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+              />
+              {fieldErrors.password && (
+                <div className="invalid-feedback small mt-1">
+                  {fieldErrors.password}
+                </div>
+              )}
             </div>
-          </div>
+
+            {/* Action Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn btn-dark w-100 py-2 fw-medium d-flex align-items-center justify-content-center gap-2"
+              style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+            >
+              {isLoading ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    aria-hidden="true"
+                  ></span>
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                "Sign In"
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* Bottom Footer Navigation Links */}
+        <div className="text-center mt-4">
+          <p className="text-muted small mb-0">
+            Don't have an account?{" "}
+            <a
+              href="/register"
+              className="text-dark fw-medium text-decoration-none border-bottom border-secondary"
+            >
+              Sign up
+            </a>
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="btn btn-link btn-sm text-muted text-decoration-none mt-2"
+          >
+            ← Back to homepage
+          </button>
         </div>
       </div>
     </div>

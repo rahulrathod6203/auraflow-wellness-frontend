@@ -15,11 +15,11 @@ const Contact = () => {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Structural loading state tracking
 
   const handleChange = (e) => {
     setContactData({ ...contactData, [e.target.id]: e.target.value });
     if (errorMessage) setErrorMessage("");
-
     if (fieldErrors[e.target.id]) {
       setFieldErrors({ ...fieldErrors, [e.target.id]: "" });
     }
@@ -30,219 +30,163 @@ const Contact = () => {
     setSuccessMessage("");
     setErrorMessage("");
     setFieldErrors({ email: "", message: "" });
+    setIsLoading(true);
 
-    // Client-side quick email pattern verification validation loop
+    // Client-side quick validation loop simulating network conditions
     if (!contactData.email.includes("@")) {
+      setIsLoading(false);
       setFieldErrors((prev) => ({
         ...prev,
-        email: "Please enter a valid email signature.",
+        email: "Please enter a valid email address.",
       }));
       return;
     }
 
-    // Success state callback logic execution
-    setSuccessMessage(
-      "Message sent successfully! Our team will respond shortly.",
-    );
-    setContactData({ email: "", message: "" });
-  };
-
-  const closeForm = () => {
-    navigate("/");
+    // Mock API submission lag
+    setTimeout(() => {
+      setIsLoading(false);
+      setSuccessMessage(
+        "Message sent successfully! Our team will respond shortly.",
+      );
+      setContactData({ email: "", message: "" });
+    }, 800);
   };
 
   return (
     <div
-      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
-      style={{
-        /* Soft, holistic organic design background composition matching your ecosystem */
-        background: `
-          radial-gradient(circle at 10% 20%, rgba(255, 64, 129, 0.08) 0%, transparent 40%),
-          radial-gradient(circle at 90% 80%, rgba(103, 58, 183, 0.08) 0%, transparent 45%),
-          radial-gradient(circle at 50% 0%, rgba(224, 242, 241, 0.6) 0%, transparent 50%),
-          #f4f6f5
-        `,
-        paddingTop: "60px",
-      }}
+      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light"
+      style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
-      {/* Background Decorative Floral/Abstract Elements representing wellness shapes */}
       <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{ top: "15%", left: "10%", fontSize: "5rem" }}
+        className="w-100"
+        style={{
+          maxWidth: "520px",
+          padding: "20px",
+          border: "0.4px solid",
+          borderRadius: "12px",
+        }}
       >
-        🌿
-      </div>
-      <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{ bottom: "15%", right: "12%", fontSize: "5rem" }}
-      >
-        🌸
-      </div>
-      <div
-        className="position-absolute opacity-10 d-none d-lg-block"
-        style={{ bottom: "20%", left: "15%", fontSize: "6rem" }}
-      >
-        ✨
-      </div>
-      <div
-        className="position-absolute opacity-15 d-none d-lg-block"
-        style={{ top: "20%", right: "15%", fontSize: "4rem" }}
-      >
-        🎯
-      </div>
+        {/* Minimal Branding / Header Section */}
+        <div className="text-center mb-4">
+          <h2 className="fw-bold tracking-tight text-dark mb-1">
+            Get in touch
+          </h2>
+          <p className="text-muted small">
+            Have questions? We are here to help you sync up.
+          </p>
+        </div>
 
-      <div className="container position-relative" style={{ zIndex: 1 }}>
-        <div className="d-flex justify-content-center">
+        {/* Global Feedback Banners */}
+        {successMessage && (
           <div
-            className="w-100 p-4 p-sm-5 border-0 shadow-lg text-dark bg-white position-relative" // Added position-relative here
-            style={{
-              /* Expanded sizing context parameters */
-              maxWidth: "540px",
-              borderRadius: "24px",
-              boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
-            }}
+            className="alert alert-success border-0 small text-center mb-3 py-2"
+            role="alert"
           >
-            <button
-              onClick={closeForm}
-              className="btn btn-link position-absolute top-0 end-0 m-3 p-2 text-decoration-none text-muted"
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "bold",
-                lineHeight: "1",
-              }}
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            {/* Soft Contrast Branding Header Layout */}
-            <div className="text-center mb-4">
-              <h1
-                className="fw-bold d-flex align-items-center justify-content-center gap-2 mb-2"
-                style={{ color: "#2d3748", letterSpacing: "-1px" }}
-              >
-                <span style={{ color: "#ff4081" }}>♥️</span>AuraFlow
-              </h1>
-              <p className="text-muted small mb-1">Contact Support Team</p>
-              <p
-                className="text-muted text-opacity-75"
-                style={{ fontSize: "0.8rem" }}
-              >
-                Have questions? We are here to help you sync up.
-              </p>
-            </div>
-
-            {/* Common Success Message Banner */}
-            {successMessage && (
-              <div className="alert alert-success py-2.5 small text-center mb-3 border-0 rounded-3">
-                {successMessage}
-              </div>
-            )}
-
-            {/* Fallback Global Error Message Banner */}
-            {errorMessage && !Object.values(fieldErrors).some(Boolean) && (
-              <div className="alert alert-danger py-2.5 small text-center mb-3 border-0 rounded-3">
-                {errorMessage}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit}>
-              {/* Email Input Box Block */}
-              <div className="mb-3">
-                <label
-                  htmlFor="email"
-                  className="form-label fw-semibold small text-secondary mb-1"
-                >
-                  Email Address
-                </label>
-                <input
-                  required
-                  type="email"
-                  className={`form-control bg-light px-3 py-2 ${fieldErrors.email ? "is-invalid border-danger bg-white" : ""}`}
-                  style={{
-                    fontSize: "0.9rem",
-                    borderRadius: "12px",
-                    color: "#2d3748",
-                    border: fieldErrors.email
-                      ? ""
-                      : "1.5px solid rgba(255, 64, 129, 0.4)", // Signature pink border line
-                    boxShadow: "none",
-                  }}
-                  id="email"
-                  placeholder="name@example.com"
-                  value={contactData.email}
-                  onChange={handleChange}
-                />
-                {fieldErrors.email && (
-                  <div
-                    className="text-danger small mt-1 ps-1 fw-medium"
-                    style={{ fontSize: "0.8rem" }}
-                  >
-                    ⚠️ {fieldErrors.email}
-                  </div>
-                )}
-              </div>
-
-              {/* Message Input Area Block */}
-              <div className="mb-4">
-                <label
-                  htmlFor="message"
-                  className="form-label fw-semibold small text-secondary mb-1"
-                >
-                  Message
-                </label>
-                <textarea
-                  required
-                  rows="3"
-                  className={`form-control bg-light px-3 py-2 ${fieldErrors.message ? "is-invalid border-danger bg-white" : ""}`}
-                  style={{
-                    fontSize: "0.9rem",
-                    borderRadius: "12px",
-                    color: "#2d3748",
-                    border: fieldErrors.message
-                      ? ""
-                      : "1.5px solid rgba(255, 64, 129, 0.4)", // Signature pink border line
-                    boxShadow: "none",
-                    resize: "none",
-                  }}
-                  id="message"
-                  placeholder="Type your message here..."
-                  value={contactData.message}
-                  onChange={handleChange}
-                />
-                {fieldErrors.message && (
-                  <div
-                    className="text-danger small mt-1 ps-1 fw-medium"
-                    style={{ fontSize: "0.8rem" }}
-                  >
-                    ⚠️ {fieldErrors.message}
-                  </div>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className="btn w-100 py-2.5 fw-bold text-white shadow border-0 rounded-pill"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
-                  fontSize: "0.95rem",
-                  letterSpacing: "0.3px",
-                }}
-              >
-                Send Message
-              </button>
-            </form>
-
-            <div className="text-center  pt-3 border-top border-light">
-              <a
-                onClick={() => navigate("/")}
-                className="text-decoration-none small fw-bold ms-1"
-                style={{ color: "#ff4081", cursor: "pointer" }}
-              >
-                ← Return to Home
-              </a>
-            </div>
+            {successMessage}
           </div>
+        )}
+
+        {errorMessage && !Object.values(fieldErrors).some(Boolean) && (
+          <div
+            className="alert alert-danger border-0 small text-center mb-3 py-2"
+            role="alert"
+          >
+            {errorMessage}
+          </div>
+        )}
+
+        {/* Support Card Frame */}
+        <div
+          className="card border-0 shadow-sm p-4 bg-white"
+          style={{ borderRadius: "12px" }}
+        >
+          <form onSubmit={handleSubmit} noValidate>
+            {/* Email Field */}
+            <div className="mb-3">
+              <label
+                htmlFor="email"
+                className="form-label small fw-medium text-secondary"
+              >
+                Email Address
+              </label>
+              <input
+                required
+                type="email"
+                id="email"
+                className={`form-control ${fieldErrors.email ? "is-invalid" : ""}`}
+                placeholder="name@example.com"
+                value={contactData.email}
+                onChange={handleChange}
+                disabled={isLoading}
+                style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+              />
+              {fieldErrors.email && (
+                <div className="invalid-feedback small mt-1">
+                  {fieldErrors.email}
+                </div>
+              )}
+            </div>
+
+            {/* Message Field */}
+            <div className="mb-4">
+              <label
+                htmlFor="message"
+                className="form-label small fw-medium text-secondary"
+              >
+                Message
+              </label>
+              <textarea
+                required
+                rows="4"
+                id="message"
+                className={`form-control ${fieldErrors.message ? "is-invalid" : ""}`}
+                placeholder="Type your message here..."
+                value={contactData.message}
+                onChange={handleChange}
+                disabled={isLoading}
+                style={{
+                  borderRadius: "6px",
+                  fontSize: "0.95rem",
+                  resize: "none",
+                }}
+              />
+              {fieldErrors.message && (
+                <div className="invalid-feedback small mt-1">
+                  {fieldErrors.message}
+                </div>
+              )}
+            </div>
+
+            {/* Action Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn btn-dark w-100 py-2 fw-medium d-flex align-items-center justify-content-center gap-2"
+              style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+            >
+              {isLoading ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    aria-hidden="true"
+                  ></span>
+                  <span>Sending message...</span>
+                </>
+              ) : (
+                "Send Message"
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* Bottom Back Navigation */}
+        <div className="text-center mt-4">
+          <button
+            onClick={() => navigate("/")}
+            className="btn btn-link btn-sm text-muted text-decoration-none"
+          >
+            ← Back to homepage
+          </button>
         </div>
       </div>
     </div>

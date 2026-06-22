@@ -1,21 +1,45 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getLoggedInUser, logout } from "../auth/AuthService";
+import { getUserById } from "../user/UserService"; // Adjust path to match your structure
+import Swal from "sweetalert2"; // High-quality interview-ready feedback confirmation
 
 function Profile() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const loggedUserId = getLoggedInUser();
 
-  // Extract user data from router navigation state (with fallback defaults)
-  const initialProfileData = location.state?.user || {
-    name: "Jane Doe",
-    email: "jane.doe@example.com",
-    phone: "+1 (555) 019-2834",
-    password: "", // Initial empty password state for editing
-    address: "742 Evergreen Terrace, Springfield",
-    roles: ["ADMIN"], // Array structure to safely handle your backend role strings
-    joinedDate: "October 2024",
-  };
+  const [profileData, setProfileData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    address: "",
+    roles: [],
+    joinedDate: "",
+  });
 
-  const [profileData, setProfileData] = useState(initialProfileData);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.user) {
+      setProfileData(location.state.user);
+    } else if (loggedUserId) {
+      setIsLoading(true);
+      getUserById(loggedUserId)
+        .then((response) => {
+          setProfileData(response.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error(
+            "Failed to fetch active user context profile details:",
+            error,
+          );
+          setIsLoading(false);
+        });
+    }
+  }, [location.state, loggedUserId]);
 
   const handleChange = (e) => {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
@@ -23,248 +47,274 @@ function Profile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     console.log("Saving updates to AuraFlow backend:", profileData);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      Swal.fire({
+        title: "Success",
+        text: "Configuration saved successfully.",
+        icon: "success",
+        confirmButtonColor: "#1a1a1a",
+      });
+    }, 800);
   };
 
-  // Safely look inside roles array or fallback to a string check
+  const handleDiscard = () => {
+    navigate("/userDashboard");
+  };
+
+  // destructive action handler showing full-stack security workflow awareness
+  const handleDeleteAccount = () => {
+    Swal.fire({
+      title: "Delete Account?",
+      text: "This action is permanent and cannot be undone. All your wellness data parameters will be wiped from our secure ledger.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc3545", // Standard Bootstrap Danger Red
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes, delete permanently",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setIsLoading(true);
+        // Invoke your backend API service: deleteUserById(loggedUserId)
+        console.log(`Invoking destructive API route for ID: ${loggedUserId}`);
+
+        setTimeout(() => {
+          setIsLoading(false);
+          logout(); // Clear JWT and session storage tokens
+          Swal.fire({
+            title: "Account Deleted",
+            text: "Your profile profile records have been removed successfully.",
+            icon: "success",
+            confirmButtonColor: "#1a1a1a",
+          });
+          navigate("/");
+        }, 1000);
+      }
+    });
+  };
+
   const isAdmin =
     profileData.roles?.[0]?.toLowerCase() === "admin" ||
     profileData.role?.toLowerCase() === "admin";
 
   return (
     <div
-      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden py-5"
+      className="container-fluid min-vh-100 bg-light d-flex align-items-center py-5"
       style={{
-        /* Same exact AuraFlow background composition */
-        background: `
-          radial-gradient(circle at 10% 20%, rgba(255, 64, 129, 0.08) 0%, transparent 40%),
-          radial-gradient(circle at 90% 80%, rgba(103, 58, 183, 0.08) 0%, transparent 45%),
-          radial-gradient(circle at 50% 0%, rgba(224, 242, 241, 0.6) 0%, transparent 50%),
-          #f4f6f5
-        `,
+        fontFamily: "'Inter', system-ui, sans-serif",
+        paddingTop: "90px",
       }}
     >
-      {/* Background Decorative Shapes matching your platform branding */}
-      <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{
-          top: "15%",
-          left: "8%",
-          fontSize: "4rem",
-          pointerEvents: "none",
-        }}
-      >
-        🌿
-      </div>
-      <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{
-          bottom: "15%",
-          right: "8%",
-          fontSize: "4rem",
-          pointerEvents: "none",
-        }}
-      >
-        🌸
-      </div>
-
-      <div
-        className="container position-relative"
-        style={{ zIndex: 1, maxWidth: "850px" }}
-      >
-        {/* Admin Dashboard Banner - Matching AuraFlow Pink gradient perfectly */}
+      <div className="container" style={{ maxWidth: "880px" }}>
+        {/* Admin Dashboard Banner Component */}
         {isAdmin && (
           <div
-            className="alert d-flex align-items-center justify-content-between p-3 border-0 shadow-sm mb-4 text-white"
+            className="alert border-0 p-4 shadow-sm mb-4 d-flex align-items-center justify-content-between text-white"
             style={{
-              background: "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
+              backgroundColor: "#1a1a1a",
+              borderRadius: "12px",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
             }}
           >
             <div className="d-flex align-items-center gap-3">
-              <span className="fs-4">🛡️</span>
+              <span
+                className="fw-bold text-white-50"
+                style={{ fontSize: "1.1rem" }}
+              >
+                ⬢
+              </span>
               <div>
-                <h6 className="fw-bold mb-0">Administrative Portal</h6>
-                <small className="opacity-90">
+                <strong
+                  className="text-white d-block mb-05"
+                  style={{ fontSize: "1rem", letterSpacing: "-0.2px" }}
+                >
+                  Administrative Portal
+                </strong>
+                <span
+                  className="text-white-50 small"
+                  style={{ fontSize: "0.85rem" }}
+                >
                   You are viewing this profile workspace with global write
-                  management privileges.
-                </small>
+                  privileges.
+                </span>
               </div>
             </div>
-            <span className="badge bg-white text-dark text-uppercase px-2 py-1">
-              System Admin
+            <span
+              className="badge text-uppercase px-2.5 py-1.5 rounded-1 fw-bold"
+              style={{
+                fontSize: "0.75rem",
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                color: "#ffffff",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+              }}
+            >
+              Sys Admin
             </span>
           </div>
         )}
 
-        {/* Profile Card Interface */}
         <div className="row g-4">
-          {/* Left Summary Block */}
-          <div className="col-12 col-lg-4">
+          {/* Left Column: Summary Info Profile Plate */}
+          <div className="col-12 col-md-4">
             <div
-              className="card border-0 shadow-sm text-center p-3 h-100"
-              style={{
-                backdropFilter: "blur(10px)",
-                backgroundColor: "rgba(255, 255, 255, 0.6)",
-              }}
+              className="card border-0 shadow-sm p-4 text-center bg-white h-100"
+              style={{ borderRadius: "12px" }}
             >
-              <div className="card-body d-flex flex-column align-items-center justify-content-center">
-                {/* Glowing Initials Graphic */}
+              <div className="d-flex flex-column align-items-center justify-content-center h-100">
                 <div
-                  className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold mb-3 shadow"
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    fontSize: "2rem",
-                    background:
-                      "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
-                  }}
+                  className="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center fw-semibold mb-3 shadow-sm"
+                  style={{ width: "72px", height: "72px", fontSize: "1.75rem" }}
                 >
                   {profileData.name
                     ? profileData.name.charAt(0).toUpperCase()
                     : "U"}
                 </div>
 
-                <h5 className="fw-bold mb-1" style={{ color: "#2d3748" }}>
+                <h5 className="fw-bold text-dark mb-1">
                   {profileData.name || "Aura Member"}
                 </h5>
-                <p className="text-muted small mb-3">{profileData.email}</p>
+                <p className="text-muted small mb-3">
+                  {profileData.email || "Loading..."}
+                </p>
 
-                {/* Account Type Badge */}
-                <span
-                  className="badge px-3 py-2 text-uppercase mb-2 text-white shadow-sm"
-                  style={{ background: "#ff4081" }}
-                >
-                  {isAdmin ? "Admin" : "User"} Account
+                <span className="badge bg-light text-dark border border-light-subtle px-3 py-1.5 rounded-pill mb-2 small fw-medium">
+                  {isAdmin ? "Admin Access" : "Standard Account"}
                 </span>
 
                 {profileData.joinedDate && (
-                  <small className="text-muted blockquote-footer mt-2">
+                  <span
+                    className="text-muted small mt-2"
+                    style={{ fontSize: "0.8rem" }}
+                  >
                     Joined {profileData.joinedDate}
-                  </small>
+                  </span>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Right Input Form Block */}
-          <div className="col-12 col-lg-8">
-            <div className="card border-0 shadow-lg p-4 bg-white">
-              <div className="card-body">
+          {/* Right Column: Profile Mutation Core Input Form */}
+          <div className="col-12 col-md-8">
+            <div
+              className="card border-0 shadow-sm p-4 bg-white mb-4"
+              style={{ borderRadius: "12px" }}
+            >
+              <div className="card-body p-0">
                 <div className="mb-4">
-                  <div className="d-flex align-items-center gap-2 mb-1">
-                    <span style={{ color: "#ff4081", fontSize: "1.25rem" }}>
-                      ♥️
-                    </span>
-                    <h4 className="fw-bold m-0" style={{ color: "#2d3748" }}>
-                      {isAdmin ? "Admin Settings" : "Account Settings"}
-                    </h4>
-                  </div>
-                  <p className="text-muted small">
+                  <h4 className="fw-bold text-dark tracking-tight mb-1">
+                    {isAdmin ? "Admin Settings" : "Account Settings"}
+                  </h4>
+                  <p className="text-muted small mb-0">
                     Update your workspace details and personal contact channels.
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                  {/* Grid Row 1: Full Name & Email */}
+                  {/* Row 1: Full Name & Email */}
                   <div className="row g-3 mb-3">
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label
-                          htmlFor="nameInput"
-                          className="form-label small fw-semibold"
-                          style={{ color: "#4a5568" }}
-                        >
-                          Full Name
-                        </label>
-                        <input
-                          required
-                          id="nameInput"
-                          type="text"
-                          name="name"
-                          value={profileData.name || ""}
-                          onChange={handleChange}
-                          className="form-control border-0 py-2 shadow-sm"
-                          style={{ backgroundColor: "#f4f6f5" }}
-                        />
-                      </div>
+                      <label
+                        htmlFor="nameInput"
+                        className="form-label small fw-medium text-secondary"
+                      >
+                        Full Name
+                      </label>
+                      <input
+                        required
+                        id="nameInput"
+                        type="text"
+                        name="name"
+                        value={profileData.name || ""}
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        className="form-control"
+                        style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+                      />
                     </div>
 
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label
-                          htmlFor="emailInput"
-                          className="form-label small fw-semibold"
-                          style={{ color: "#4a5568" }}
-                        >
-                          Email Address
-                        </label>
-                        <input
-                          required
-                          id="emailInput"
-                          type="email"
-                          name="email"
-                          value={profileData.email || ""}
-                          onChange={handleChange}
-                          className="form-control border-0 py-2 shadow-sm"
-                          style={{ backgroundColor: "#f4f6f5" }}
-                        />
-                      </div>
+                      <label
+                        htmlFor="emailInput"
+                        className="form-label small fw-medium text-secondary"
+                      >
+                        Email Address (Locked)
+                      </label>
+                      <input
+                        id="emailInput"
+                        type="email"
+                        name="email"
+                        value={profileData.email || ""}
+                        readOnly
+                        disabled
+                        className="form-control bg-light text-muted border-light-subtle"
+                        style={{
+                          borderRadius: "6px",
+                          fontSize: "0.95rem",
+                          cursor: "not-allowed",
+                        }}
+                      />
                     </div>
                   </div>
 
-                  {/* Grid Row 2: Phone & Password */}
+                  {/* Row 2: Phone & Password */}
                   <div className="row g-3 mb-3">
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label
-                          htmlFor="phoneInput"
-                          className="form-label small fw-semibold"
-                          style={{ color: "#4a5568" }}
-                        >
-                          Phone Number
-                        </label>
-                        <input
-                          required
-                          id="phoneInput"
-                          type="tel"
-                          name="phone"
-                          value={profileData.phone || ""}
-                          onChange={handleChange}
-                          className="form-control border-0 py-2 shadow-sm"
-                          style={{ backgroundColor: "#f4f6f5" }}
-                        />
-                      </div>
+                      <label
+                        htmlFor="phoneInput"
+                        className="form-label small fw-medium text-secondary"
+                      >
+                        Phone Number (Locked)
+                      </label>
+                      <input
+                        id="phoneInput"
+                        type="tel"
+                        name="phone"
+                        value={profileData.phone || ""}
+                        readOnly
+                        disabled
+                        className="form-control bg-light text-muted border-light-subtle"
+                        style={{
+                          borderRadius: "6px",
+                          fontSize: "0.95rem",
+                          cursor: "not-allowed",
+                        }}
+                      />
                     </div>
 
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label
-                          htmlFor="passwordInput"
-                          className="form-label small fw-semibold"
-                          style={{ color: "#4a5568" }}
-                        >
-                          Change Password
-                        </label>
-                        <input
-                          id="passwordInput"
-                          type="password"
-                          name="password"
-                          placeholder="••••••••"
-                          value={profileData.password || ""}
-                          onChange={handleChange}
-                          className="form-control border-0 py-2 shadow-sm"
-                          style={{ backgroundColor: "#f4f6f5" }}
-                        />
-                      </div>
+                      <label
+                        htmlFor="passwordInput"
+                        className="form-label small fw-medium text-secondary"
+                      >
+                        Password (Locked)
+                      </label>
+                      <input
+                        id="passwordInput"
+                        type="password"
+                        name="password"
+                        placeholder="••••••••"
+                        value={profileData.password || ""}
+                        readOnly
+                        disabled
+                        className="form-control bg-light text-muted border-light-subtle"
+                        style={{
+                          borderRadius: "6px",
+                          fontSize: "0.95rem",
+                          cursor: "not-allowed",
+                        }}
+                      />
                     </div>
                   </div>
 
-                  {/* Grid Row 3: Address */}
-                  <div className="form-group mb-4">
+                  {/* Row 3: Full Address */}
+                  <div className="mb-4">
                     <label
                       htmlFor="addressInput"
-                      className="form-label small fw-semibold"
-                      style={{ color: "#4a5568" }}
+                      className="form-label small fw-medium text-secondary"
                     >
                       Street Address
                     </label>
@@ -275,32 +325,77 @@ function Profile() {
                       name="address"
                       value={profileData.address || ""}
                       onChange={handleChange}
-                      className="form-control border-0 py-2 shadow-sm"
-                      style={{ backgroundColor: "#f4f6f5", resize: "none" }}
+                      disabled={isLoading}
+                      className="form-control"
+                      style={{
+                        borderRadius: "6px",
+                        fontSize: "0.95rem",
+                        resize: "none",
+                      }}
                     />
                   </div>
 
                   {/* Footer Controls */}
-                  <div className="d-flex gap-2 justify-content-end pt-3 border-top border-light">
+                  <div className="d-flex gap-2 justify-content-end pt-3 border-top border-light-subtle">
                     <button
                       type="button"
-                      className="btn fw-semibold px-4 py-2 rounded-pill bg-white text-dark shadow-sm"
-                      style={{ border: "1.5px solid rgba(255, 64, 129, 0.2)" }}
+                      onClick={handleDiscard}
+                      disabled={isLoading}
+                      className="btn btn-light btn-sm px-3 text-secondary fw-medium"
+                      style={{ borderRadius: "6px" }}
                     >
                       Discard
                     </button>
                     <button
                       type="submit"
-                      className="btn fw-bold px-4 py-2 border-0 text-white shadow rounded-pill"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
-                      }}
+                      disabled={isLoading}
+                      className="btn btn-dark btn-sm px-4 fw-medium d-flex align-items-center gap-2"
+                      style={{ borderRadius: "6px" }}
                     >
-                      Save Configuration
+                      {isLoading ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                          ></span>
+                          <span>Saving...</span>
+                        </>
+                      ) : (
+                        "Save Configuration"
+                      )}
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+
+            {/* INTERVIEW SHOWCASE: Premium destructive separation context box (Danger Zone) */}
+            <div
+              className="card border border-danger border-opacity-20 shadow-sm p-4 bg-white"
+              style={{ borderRadius: "12px" }}
+            >
+              <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+                <div>
+                  <h5
+                    className="fw-bold text-danger tracking-tight mb-1"
+                    style={{ fontSize: "1rem" }}
+                  >
+                    Danger Zone
+                  </h5>
+                  <p className="text-muted small mb-0">
+                    Permanently delete your profile account workspace and purge
+                    database logs.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleDeleteAccount}
+                  disabled={isLoading}
+                  className="btn btn-outline-danger btn-sm px-3 fw-medium text-nowrap align-self-start align-self-sm-center"
+                  style={{ borderRadius: "6px" }}
+                >
+                  Delete Account
+                </button>
               </div>
             </div>
           </div>

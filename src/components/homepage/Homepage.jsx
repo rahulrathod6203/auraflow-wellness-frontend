@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { isUserLoggedIn } from "../auth/AuthService"; // Adjust path to match your AuthService location
+import { isUserLoggedIn } from "../auth/AuthService";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -8,103 +8,52 @@ const HomePage = () => {
 
   return (
     <div
-      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
+      className="container-fluid min-vh-100 d-flex align-items-center bg-light position-relative"
       style={{
-        /* Matches your LoginPage background composition perfectly */
-        background: `
-          radial-gradient(circle at 10% 20%, rgba(255, 64, 129, 0.08) 0%, transparent 40%),
-          radial-gradient(circle at 90% 80%, rgba(103, 58, 183, 0.08) 0%, transparent 45%),
-          radial-gradient(circle at 50% 0%, rgba(224, 242, 241, 0.6) 0%, transparent 50%),
-          #f4f6f5
-        `,
+        fontFamily: "'Inter', system-ui, sans-serif",
+        paddingTop: "80px",
       }}
     >
-      {/* Background Decorative Floral/Abstract Elements representing wellness shapes */}
-      <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{
-          top: "15%",
-          left: "10%",
-          fontSize: "5rem",
-          pointerEvents: "none",
-        }}
-      >
-        🌿
-      </div>
-      <div
-        className="position-absolute opacity-25 d-none d-lg-block"
-        style={{
-          bottom: "15%",
-          right: "12%",
-          fontSize: "5rem",
-          pointerEvents: "none",
-        }}
-      >
-        🌸
-      </div>
-      <div
-        className="position-absolute opacity-10 d-none d-lg-block"
-        style={{
-          bottom: "20%",
-          left: "15%",
-          fontSize: "6rem",
-          pointerEvents: "none",
-        }}
-      >
-        ✨
-      </div>
-      <div
-        className="position-absolute opacity-15 d-none d-lg-block"
-        style={{
-          top: "20%",
-          right: "15%",
-          fontSize: "4rem",
-          pointerEvents: "none",
-        }}
-      >
-        🎯
-      </div>
-
-      <div className="container position-relative py-5" style={{ zIndex: 1 }}>
+      <div className="container py-5">
         <div className="row align-items-center g-5">
-          {/* Left Column: Hero Text Content */}
+          {/* Left Column: Core Hero Text & Action Triggers */}
           <div className="col-12 col-md-7 text-center text-md-start">
-            <div className="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-3">
-              <span style={{ color: "#ff4081", fontSize: "2.5rem" }}>♥️</span>
-              <h1
-                className="display-3 fw-bold m-0"
-                style={{ color: "#2d3748", letterSpacing: "-1px" }}
+            <div className="d-inline-flex align-items-center gap-2 mb-3 bg-white px-3 py-1.5 rounded-pill shadow-sm border border-light-subtle">
+              <span
+                className="text-dark fw-bold"
+                style={{ fontSize: "0.9rem" }}
               >
-                AuraFlow
-              </h1>
+                ⬢
+              </span>
+              <span className="text-secondary small fw-medium">
+                Platform Live v1.0
+              </span>
             </div>
 
-            <h2 className="display-5 fw-semibold mb-4 text-secondary">
-              Your wellness, <br className="d-none d-md-block" />
+            <h1
+              className="display-4 fw-bold tracking-tight text-dark mb-3"
+              style={{ letterSpacing: "-1.5px" }}
+            >
+              Your wellness, <br />
               perfectly synchronized.
-            </h2>
+            </h1>
 
             <p
-              className="lead mb-5 custom-paragraph"
-              style={{ maxWidth: "550px", lineHeight: "1.7", color: "#4a5568" }}
+              className="lead text-secondary mb-4 fs-5"
+              style={{ maxWidth: "520px", lineHeight: "1.6" }}
             >
               A secure, intelligent digital health platform designed to track
-              your cycles, analyze your symptoms, and bring deep clarity to your
-              personal well-being.
+              your cycles, analyze symptoms, and bring metric-driven clarity to
+              your personal well-being.
             </p>
 
-            {/* Primary Call-to-Action Triggers */}
             <div className="d-flex flex-column flex-sm-row justify-content-center justify-content-md-start gap-3">
               <button
                 onClick={() =>
                   navigate(isAuthenticated ? "/userDashboard" : "/register")
                 }
-                className="btn fw-bold px-4 py-3 border-0 text-white shadow rounded-pill"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
-                  fontSize: "1.1rem",
-                }}
+                className="btn btn-dark btn-lg px-4 py-2.5 fw-medium"
+                style={{ borderRadius: "6px", fontSize: "1rem" }}
               >
                 {isAuthenticated
                   ? "Enter Workspace Panel →"
@@ -114,11 +63,8 @@ const HomePage = () => {
               {!isAuthenticated && (
                 <button
                   onClick={() => navigate("/login")}
-                  className="btn fw-semibold px-4 py-3 rounded-pill bg-white text-dark shadow-sm"
-                  style={{
-                    fontSize: "1.1rem",
-                    border: "1.5px solid rgba(255, 64, 129, 0.4)",
-                  }}
+                  className="btn btn-outline-secondary btn-lg px-4 py-2.5 bg-white fw-medium text-dark"
+                  style={{ borderRadius: "6px", fontSize: "1rem" }}
                 >
                   Sign In to Account
                 </button>
@@ -126,32 +72,79 @@ const HomePage = () => {
             </div>
           </div>
 
-          {/* Right Column: Matched Geometric Brand Visual Component */}
-          <div className="col-12 col-md-5 d-flex justify-content-center">
-            <div
-              className="position-relative d-flex align-items-center justify-content-center rounded-circle border-0 shadow-lg bg-white"
-              style={{
-                width: "320px",
-                height: "320px",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.04)",
-              }}
-            >
-              {/* Soft pink glowing center element representing your brand core */}
-              <div
-                className="position-absolute rounded-circle opacity-20"
-                style={{
-                  width: "200px",
-                  height: "200px",
-                  background:
-                    "linear-gradient(135deg, #ff4081 0%, #673ab7 100%)",
-                  filter: "blur(45px)",
-                }}
-              />
-              <span className="display-1" style={{ zIndex: 1 }}>
-                ✨
-              </span>
+          {/* Right Column: Clean Grid Features Mockup */}
+          <div className="col-12 col-md-5">
+            <div className="row g-3">
+              <div className="col-6">
+                <div
+                  className="card border-0 shadow-sm p-4 bg-white"
+                  style={{ borderRadius: "12px" }}
+                >
+                  <div className="text-dark fw-bold mb-2">01 / Track</div>
+                  <small className="text-secondary d-block">
+                    Log metrics daily with immediate feedback analytics.
+                  </small>
+                </div>
+              </div>
+
+              <div className="col-6">
+                <div
+                  className="card border-0 shadow-sm p-4 bg-white"
+                  style={{ borderRadius: "12px" }}
+                >
+                  <div className="text-dark fw-bold mb-2">02 / Secure</div>
+                  <small className="text-secondary d-block">
+                    JWT validated structural security parameters.
+                  </small>
+                </div>
+              </div>
+
+              <div className="col-12">
+                <div
+                  className="card border-0 shadow-sm p-4 bg-white"
+                  style={{ borderRadius: "12px" }}
+                >
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="text-dark fw-bold">
+                      03 / Analytics Overview
+                    </span>
+                    <span className="badge bg-success-subtle text-success border border-success-subtle rounded-pill small px-2">
+                      Active
+                    </span>
+                  </div>
+                  <div className="progress mb-2" style={{ height: "6px" }}>
+                    <div
+                      className="progress-bar bg-dark"
+                      role="progressbar"
+                      style={{ width: "70%" }}
+                    ></div>
+                  </div>
+                  <small className="text-secondary d-block">
+                    System metrics dashboard updating live.
+                  </small>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ================= SIMPLIFIED FLOATING CHATBOT ICON ================= */}
+      <div
+        className="position-fixed bottom-0 end-0 m-4"
+        style={{ zIndex: 1050 }}
+      >
+        <div
+          className="btn btn-dark rounded-pill shadow-lg p-0 d-flex align-items-center justify-content-center border border-secondary border-opacity-25"
+          style={{
+            width: "56px",
+            height: "56px",
+            backgroundColor: "#1a1a1a",
+            cursor: "default",
+          }}
+          title="AuraAI Bot"
+        >
+          <span style={{ fontSize: "1.5rem" }}>🤖</span>
         </div>
       </div>
     </div>

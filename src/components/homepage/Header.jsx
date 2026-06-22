@@ -1,37 +1,37 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { getLoggedInUser, isUserLoggedIn, logout } from "../auth/AuthService";
 import Swal from "sweetalert2";
-import defaulticon from "../../assets/letter-u.png";
 
 const Header = () => {
   const isAuthenticated = isUserLoggedIn();
   const user = getLoggedInUser();
-
-  // Set to null or "" to instantly test your monogram letter placeholder fallback!
-  const userPhoto =
-    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop";
-
-  let hasPhoto = false;
-
   const navigate = useNavigate();
+
+  const userPhoto = "";
+
+  const userInitial =
+    user && typeof user === "string" && isNaN(user)
+      ? user.charAt(0).toUpperCase()
+      : "U";
 
   const handleLogout = () => {
     Swal.fire({
-      title: "Log out !",
+      title: "Log out",
       text: "Are you sure you want to logout?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#212529",
+      cancelButtonColor: "#dc3545",
       confirmButtonText: "Yes, log out!",
     }).then((result) => {
       if (result.isConfirmed) {
         logout();
         Swal.fire({
           title: "Logged out!",
-          title: "You have been logged out Successfully",
+          text: "You have been logged out successfully.",
           icon: "success",
+          confirmButtonColor: "#212529",
         });
         navigate("/");
       }
@@ -40,23 +40,25 @@ const Header = () => {
 
   return (
     <nav
-      className="navbar fixed-top navbar-expand-lg navbar-dark border-bottom border-secondary border-opacity-10 py-3"
-      style={{ backgroundColor: "#121212" }}
+      className="navbar fixed-top navbar-expand-lg navbar-dark border-bottom border-secondary border-opacity-25 shadow-sm py-2.5"
+      style={{
+        backgroundColor: "#1a1a1a",
+        fontFamily: "'Inter', system-ui, sans-serif",
+      }}
     >
       <div className="container">
-        {/* Brand/Logo with exact matching pink heart anchor icon */}
-        <a
-          className="navbar-brand fw-bold d-flex align-items-center fs-4"
-          href="/"
-          style={{ letterSpacing: "-0.5px" }}
+        {/* Brand / Logo */}
+        <Link
+          className="navbar-brand fw-bold d-flex align-items-center text-white"
+          to="/"
         >
-          <span style={{ color: "#ff4081" }} className="me-2">
-            ♥️
+          <span className="text-white me-1" style={{ fontSize: "1.1rem" }}>
+            ⬢
           </span>
           AuraFlow
-        </a>
+        </Link>
 
-        {/* Responsive Mobile Trigger */}
+        {/* Responsive Mobile Trigger Button */}
         <button
           className="navbar-toggler border-0"
           type="button"
@@ -66,132 +68,121 @@ const Header = () => {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
+          <span
+            className="navbar-toggler-icon"
+            style={{ width: "1.25rem", height: "1.25rem" }}
+          ></span>
         </button>
 
-        {/* Collapsible content wrapper */}
+        {/* Navigation Content Matrix Wrapper */}
         <div className="collapse navbar-collapse" id="navbarNav">
-          {/* Centralized Navigation links matrix */}
-          <ul className="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-3 text-center">
+          <ul className="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-2">
             <li className="nav-item">
-              <a
-                className="nav-link text-white opacity-75 custom-nav-link"
-                href="/"
-              >
+              <Link className="nav-link text-white-50 small fw-medium" to="/">
                 Home
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
               <a
-                className="nav-link text-white opacity-50 custom-nav-link"
-                href="#"
+                className="nav-link text-white-50 small fw-medium"
+                href="#features"
               >
                 Features
               </a>
             </li>
-
-            {isAuthenticated ? (
-              <li className="nav-item">
-                <a
-                  className="nav-link text-white opacity-50 custom-nav-link"
-                  href="#"
-                >
-                  Need Help?
-                </a>
-              </li>
-            ) : (
-              <li className="nav-item">
-                <a
-                  className="nav-link text-white opacity-50 custom-nav-link"
-                  href="/contact"
-                >
-                  Contact us
-                </a>
-              </li>
-            )}
+            <li className="nav-item">
+              <Link
+                className="nav-link text-white-50 small fw-medium"
+                to={isAuthenticated ? "/help" : "/contact"}
+              >
+                {isAuthenticated ? "Need Help?" : "Contact us"}
+              </Link>
+            </li>
           </ul>
 
-          {/* User Status Interface Container */}
-          <div className="d-flex justify-content-center align-items-center gap-3 mt-3 mt-lg-0">
+          {/* Authentication Control Block */}
+          <div className="d-flex align-items-center gap-2 mt-2 mt-lg-0 justify-content-center">
             {!isAuthenticated ? (
               <>
-                <a
-                  href="/login"
-                  className="btn btn-sm text-white border-0 fw-semibold px-3 py-2 opacity-75"
-                  style={{ fontSize: "0.9rem" }}
+                <Link
+                  to="/login"
+                  className="btn btn-sm btn-link text-white-50 text-decoration-none fw-medium px-3"
                 >
                   Sign In
-                </a>
-                <a
-                  href="/register"
-                  className="btn btn-sm fw-bold px-4 py-2 rounded-pill shadow-sm text-white"
-                  style={{ backgroundColor: "#ff4081", fontSize: "0.9rem" }}
+                </Link>
+                <Link
+                  to="/register"
+                  className="btn btn-sm btn-light fw-medium px-3"
+                  style={{ borderRadius: "6px" }}
                 >
                   Get Started
-                </a>
+                </Link>
               </>
             ) : (
               <div className="dropdown">
                 <button
                   type="button"
-                  className="btn p-0 border-0 dropdown-toggle"
+                  className="btn p-0 border-0 d-flex align-items-center dropdown-toggle no-caret"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
+                  id="userDropdown"
                 >
-                  {hasPhoto ? (
+                  {userPhoto ? (
                     <img
                       src={userPhoto}
-                      alt={user ? user.charAt(0) : "U"}
-                      width="38px"
-                      height="38px"
-                      className="rounded-circle border border-secondary border-opacity-50 shadow-sm"
+                      alt="User profile"
+                      width="34px"
+                      height="34px"
+                      className="rounded-circle border border-secondary"
                     />
                   ) : (
-                    <img
-                      src={defaulticon}
-                      alt={user ? user.charAt(0) : "U"}
-                      width="38px"
-                      height="38px"
-                      className="rounded-circle border border-secondary border-opacity-50 shadow-sm"
-                    />
+                    <div
+                      className="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center fw-semibold small"
+                      style={{
+                        width: "34px",
+                        height: "34px",
+                        fontSize: "0.85rem",
+                      }}
+                    >
+                      {userInitial}
+                    </div>
                   )}
                 </button>
+
                 <ul
-                  className="dropdown-menu dropdown-menu-end shadow border border-secondary border-opacity-10 py-2 custom-dropdown-animate"
-                  style={{
-                    background: "white",
-                  }}
+                  className="dropdown-menu dropdown-menu-end shadow border border-light-subtle py-1 mt-2"
+                  aria-labelledby="userDropdown"
                 >
                   <li>
-                    <a
-                      className="dropdown-item text-black opacity-75 py-2"
-                      href="/userDashboard"
+                    <Link
+                      className="dropdown-item small text-secondary py-2"
+                      to="/userDashboard"
                     >
                       Dashboard
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      className="dropdown-item text-black opacity-75 py-2"
-                      href="#"
+                    <Link
+                      className="dropdown-item small text-secondary py-2"
+                      to="/profile"
                     >
-                      Profile Settings
-                    </a>
+                      Account Settings
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      className="dropdown-item text-black opacity-75 py-2"
-                      href="#"
+                    <Link
+                      className="dropdown-item small text-secondary py-2"
+                      to="/privacy"
                     >
-                      Preferences
-                    </a>
+                      Security & Privacy
+                    </Link>
                   </li>
                   <li>
-                    <hr className="dropdown-divider border-secondary border-opacity-20" />
+                    <hr className="dropdown-divider my-1 border-light-subtle" />
                   </li>
                   <li>
                     <button
-                      className="dropdown-item text-danger fw-semibold py-1"
+                      className="dropdown-item small text-danger fw-medium py-2"
                       onClick={handleLogout}
                     >
                       Log out
