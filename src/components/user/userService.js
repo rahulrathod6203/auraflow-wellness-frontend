@@ -18,3 +18,7 @@ axios.interceptors.request.use(
 export const getUserById = (id) => {
   return axios.get(`${BASE_URL}/${id}`);
 };
+
+export const getAllUsers = (pageNo, pageSize) => {
+  return axios.get(`${BASE_URL}?pageNo=${pageNo}&pageSize=${pageSize}`);
+};

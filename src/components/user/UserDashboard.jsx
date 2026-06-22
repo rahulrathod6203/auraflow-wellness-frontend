@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getLoggedInUser, logout } from "../auth/AuthService";
 import { useNavigate, Link } from "react-router-dom";
 import { getUserById } from "./UserService";
+import UserList from "../admin/UserList";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
@@ -266,6 +267,13 @@ const UserDashboard = () => {
                   <span>Chat with AuraAI</span>
                   <span className="text-muted small">→</span>
                 </button>
+                <Link
+                  to="/userList"
+                  className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between small text-secondary py-2.5 fw-medium"
+                >
+                  <span>Registered Users</span>
+                  <span className="text-muted small">→</span>
+                </Link>
               </div>
             </div>
           </div>

@@ -20,6 +20,7 @@ import UserDashboard from "./components/user/UserDashboard";
 import { isUserLoggedIn } from "./components/auth/AuthService";
 import Contact from "./components/about/Contact";
 import Profile from "./components/user/Profile";
+import UserList from "./components/admin/UserList";
 
 const App = () => {
   // Simple best-practice guard component for routing
@@ -49,6 +50,15 @@ const App = () => {
           element={
             <AuthenticatedRoute>
               <UserDashboard />
+            </AuthenticatedRoute>
+          }
+        />
+
+        <Route
+          path="/userList"
+          element={
+            <AuthenticatedRoute>
+              <UserList />
             </AuthenticatedRoute>
           }
         />
