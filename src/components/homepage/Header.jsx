@@ -93,7 +93,7 @@ const Header = () => {
             <li className="nav-item">
               <Link
                 className="nav-link text-white-50 small fw-medium"
-                to={isAuthenticated ? "/help" : "/contact"}
+                to={isAuthenticated ? "/contact" : "/contact"}
               >
                 {isAuthenticated ? "Need Help?" : "Contact us"}
               </Link>

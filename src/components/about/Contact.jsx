@@ -58,14 +58,33 @@ const Contact = () => {
       style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
       <div
-        className="w-100"
+        className="w-100 position-relative"
         style={{
           maxWidth: "520px",
-          padding: "20px",
+          padding: "40px 20px 20px 20px", // Increased top padding to give the close button breathing room
           border: "0.4px solid",
           borderRadius: "12px",
         }}
       >
+        {/* Top Right Close Button */}
+        <button
+          onClick={() => navigate(-1)} // Takes the user back to the previous page
+          className="btn btn-sm text-secondary p-0 border-0 position-absolute"
+          style={{
+            top: "16px",
+            right: "20px",
+            fontSize: "1.5rem",
+            lineHeight: 1,
+            opacity: 0.6,
+            transition: "opacity 0.2s ease",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.6")}
+          title="Close and go back"
+        >
+          &times;
+        </button>
+
         {/* Minimal Branding / Header Section */}
         <div className="text-center mb-4">
           <h2 className="fw-bold tracking-tight text-dark mb-1">

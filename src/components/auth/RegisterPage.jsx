@@ -90,14 +90,33 @@ const RegisterPage = () => {
       }}
     >
       <div
-        className="w-100"
+        className="w-100 position-relative"
         style={{
           maxWidth: "520px",
-          padding: "20px",
+          padding: "40px 20px 20px 20px", // Balanced top padding for the close button
           border: "0.4px solid",
           borderRadius: "12px",
         }}
       >
+        {/* Top Right Close Button */}
+        <button
+          onClick={() => navigate(-1)} // Navigates back to the previous view history layer
+          className="btn btn-sm text-secondary p-0 border-0 position-absolute"
+          style={{
+            top: "16px",
+            right: "20px",
+            fontSize: "1.5rem",
+            lineHeight: 1,
+            opacity: 0.6,
+            transition: "opacity 0.2s ease",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.6")}
+          title="Close and go back"
+        >
+          &times;
+        </button>
+
         {/* Minimal Branding */}
         <div className="text-center mb-4">
           <h2 className="fw-bold tracking-tight text-dark mb-1">
