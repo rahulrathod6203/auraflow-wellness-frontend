@@ -10,7 +10,7 @@ const UserList = () => {
     const fetchUsers = async () => {
       try {
         // Fetch all data without applying page splits
-        const response = await getAllUsers();
+        const response = await getAllUsers(0, 10);
         const dataArray = response.data?.content || response.data || [];
         setUsers([...dataArray]);
       } catch (error) {
