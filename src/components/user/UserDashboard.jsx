@@ -19,6 +19,7 @@ const UserDashboard = () => {
       try {
         const fetchedUser = await getUserById(loggedUserId);
         setUserData(fetchedUser.data);
+        console.log(fetchedUser.data);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -28,6 +29,10 @@ const UserDashboard = () => {
       fetchUser();
     }
   }, [loggedUserId]);
+
+  const isAdmin =
+    userData.roles?.[0]?.toLowerCase() === "admin" ||
+    userData.role?.toLowerCase() === "admin";
 
   // 2. Dynamic Time-of-Day Greeting (IST Based)
   useEffect(() => {
@@ -246,7 +251,7 @@ const UserDashboard = () => {
                   <span className="text-muted small">→</span>
                 </Link>
                 <Link
-                  to="/privacy"
+                  to="#"
                   className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between small text-secondary py-2.5 fw-medium"
                 >
                   <span>Security & Privacy</span>
@@ -267,19 +272,22 @@ const UserDashboard = () => {
                   <span>Chat with AuraAI</span>
                   <span className="text-muted small">→</span>
                 </button>
-                <Link
-                  to="/userList"
-                  className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between small text-secondary py-2.5 fw-medium"
-                >
-                  <span>Registered Users</span>
-                  <span className="text-muted small">→</span>
-                </Link>
+                {isAdmin ? (
+                  <Link
+                    to="/userList"
+                    className="list-group-item list-group-item-action border-0 px-0 d-flex align-items-center justify-content-between small text-secondary py-2.5 fw-medium"
+                  >
+                    <span>Registered Users</span>
+                    <span className="text-muted small">→</span>
+                  </Link>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
-      {/* ================= FLOATING DYNAMIC CHAT POPUP WIDGET ================= */}
       {/* ================= FLOATING CHATBOT ICON & WINDOW ================= */}
       <div
         className="position-fixed bottom-0 end-0 m-4 d-flex align-items-center gap-3 position-relative"

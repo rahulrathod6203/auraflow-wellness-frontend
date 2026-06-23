@@ -6,13 +6,20 @@ const UserList = () => {
   const [users, setUsers] = useState([]);
   const isAuthenticated = isUserLoggedIn();
 
+  // Simple Pagination States
+  const [currentPage, setCurrentPage] = useState(0); // 0-indexed for Spring Boot
+  const [isLastPage, setIsLastPage] = useState(false);
+  const pageSize = 10;
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        // Fetch all data without applying page splits
-        const response = await getAllUsers(0, 10);
+        // Pass page number and size to the API
+        const response = await getAllUsers(currentPage, pageSize);
         const dataArray = response.data?.content || response.data || [];
+
         setUsers([...dataArray]);
+        setIsLastPage(response.data?.lastPage ?? false);
       } catch (error) {
         console.error("Failed to fetch users:", error);
       }
@@ -21,7 +28,7 @@ const UserList = () => {
     if (isAuthenticated) {
       fetchUsers();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, currentPage]); // Re-runs when page changes
 
   return (
     <div
@@ -32,7 +39,7 @@ const UserList = () => {
       }}
     >
       <div className="container" style={{ paddingTop: "40px" }}>
-        {/* Simple Clean Header */}
+        {/* Header Section */}
         <div className="mb-4">
           <h2 className="fw-bold text-dark tracking-tight mb-1">
             Registered Users
@@ -42,9 +49,9 @@ const UserList = () => {
           </p>
         </div>
 
-        {/* Minimal Full Width Table Container Frame */}
+        {/* Full Width Table Container Frame */}
         <div
-          className="card border-0 shadow-sm overflow-hidden"
+          className="card border-0 shadow-sm overflow-hidden mb-3"
           style={{ borderRadius: "12px" }}
         >
           <div className="table-responsive">
@@ -65,9 +72,7 @@ const UserList = () => {
                   <th className="py-3 fw-semibold">Roles</th>
                   <th className="py-3 fw-semibold">Status</th>
                   <th className="py-3 fw-semibold">Registered Date</th>
-                  <th className="py-3 fw-semibold text-center String pe-3">
-                    Action
-                  </th>
+                  <th className="py-3 fw-semibold text-center pe-3">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -134,6 +139,32 @@ const UserList = () => {
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* Simple Pagination Control Panel */}
+        <div className="d-flex justify-content-between align-items-center mt-3 px-1">
+          <span className="text-secondary small">
+            Viewing page <strong>{currentPage + 1}</strong>
+          </span>
+
+          <div className="d-flex gap-2">
+            <button
+              className="btn btn-sm btn-outline-dark px-3 fw-medium"
+              style={{ borderRadius: "6px" }}
+              onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
+              disabled={currentPage === 0}
+            >
+              Previous
+            </button>
+            <button
+              className="btn btn-sm btn-outline-dark px-3 fw-medium"
+              style={{ borderRadius: "6px" }}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={isLastPage}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

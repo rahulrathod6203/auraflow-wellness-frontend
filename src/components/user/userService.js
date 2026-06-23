@@ -19,6 +19,6 @@ export const getUserById = (id) => {
   return axios.get(`${BASE_URL}/${id}`);
 };
 
-export const getAllUsers = (pageNo, pageSize) => {
+export const getAllUsers = (pageNo = 0, pageSize = 10) => {
   return axios.get(`${BASE_URL}?pageNo=${pageNo}&pageSize=${pageSize}`);
 };
