@@ -1,0 +1,47 @@
+/* Full viewport page layout container with standard image scaling rules */
+.home-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  font-family: "Inter", system-ui, sans-serif;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 40px 20px;
+}
+
+/* Base flex-alignment layout override for standard positioning grids */
+.home-container {
+  display: flex;
+  align-items: center;
+  min-height: 70vh; /* Replaces rigid 200px padding-top for better responsive spacing */
+}
+
+/* Crisp font sizing adjustments matching the AuraFlow layout specs */
+.home-hero-title {
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+/* Max text bounds mapping rule for easy reading blocks */
+.home-description {
+  max-width: 540px;
+  opacity: 0.9;
+}
+
+/* Button UI presets to match authentication buttons */
+.home-btn-primary,
+.home-btn-secondary {
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+/* Distinct subtle border fallback adjustments */
+.home-btn-secondary {
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}

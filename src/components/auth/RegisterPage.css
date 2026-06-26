@@ -1,0 +1,68 @@
+/* Container layout to center content perfectly with background images */
+.register-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", system-ui, sans-serif;
+  padding: 40px 20px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Glassmorphism wrapper framing matching look, padding, blur, and scale profiles */
+.register-card {
+  width: 100%;
+  max-width: 540px; /* Slightly wider layout to accommodate the 2-column grid cleanly */
+  padding: 40px 30px 30px 30px;
+  border-radius: 12px;
+  position: relative; /* Allows close button positioning */
+  background-color: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Floating exit close element placement */
+.register-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: #6c757d;
+  opacity: 0.5;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.register-close-btn:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Structural crisp form inputs boundary setups */
+.register-input {
+  border-radius: 8px;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #dee2e6;
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
+}
+
+.register-input:focus {
+  border-color: #212529;
+  box-shadow: 0 0 0 0.2rem rgba(33, 37, 41, 0.15);
+}
+
+/* Uniform actionable button behaviors with micro-interactions */
+.register-btn {
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}

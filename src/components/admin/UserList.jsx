@@ -32,7 +32,7 @@ const UserList = () => {
 
   return (
     <div
-      className="bg-light min-vh-100 py-4"
+      className="bg-light min-vh-100 py-5"
       style={{
         fontFamily: "'Inter', system-ui, sans-serif",
         paddingTop: "90px",

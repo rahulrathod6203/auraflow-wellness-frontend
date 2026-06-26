@@ -78,7 +78,10 @@ const Header = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-2">
             <li className="nav-item">
-              <Link className="nav-link text-white-50 small fw-medium" to="/">
+              <Link
+                className="nav-link text-white-50 small fw-medium"
+                to={isAuthenticated ? "/userDashboard" : "/"}
+              >
                 Home
               </Link>
             </li>

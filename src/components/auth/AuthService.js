@@ -15,6 +15,9 @@ export const getToken = () => localStorage.getItem("token");
 export const saveLoggedInUser = (id) =>
   sessionStorage.setItem("authenticatedUser", id);
 
+export const saveLoggedInUserEmail = (email) =>
+  sessionStorage.setItem("authenticatedUserEmail", email);
+
 export const isUserLoggedIn = (email) => {
   const loggedInUser = sessionStorage.getItem("authenticatedUser");
 
@@ -28,6 +31,13 @@ export const isUserLoggedIn = (email) => {
 
 export const getLoggedInUser = () => {
   const loggedInUserEmail = sessionStorage.getItem("authenticatedUser");
+  //console.log(loggedInUserEmail);
+
+  return loggedInUserEmail;
+};
+
+export const getLoggedInUserEmail = () => {
+  const loggedInUserEmail = sessionStorage.getItem("authenticatedUserEmail");
   //console.log(loggedInUserEmail);
 
   return loggedInUserEmail;

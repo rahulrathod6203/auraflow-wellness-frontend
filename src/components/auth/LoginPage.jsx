@@ -1,23 +1,25 @@
 import React, { useState } from "react";
-import { getToken, login, saveLoggedInUser, storeToken } from "./AuthService";
 import { useNavigate } from "react-router-dom";
+import {
+  login,
+  storeToken,
+  saveLoggedInUser,
+  saveLoggedInUserEmail,
+} from "./AuthService";
+import aura from "../../assets/aura.jpg";
+import "./LoginPage.css";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({
-    email: "",
-    password: "",
-  });
 
-  const [fieldErrors, setFieldErrors] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [successMessage, setSuccessMessage] = useState("");
+  // Memorable and simple state structures
+  const [userData, setUserData] = useState({ email: "", password: "" });
+  const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Showcase UI state handling
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Sync inputs dynamically and clear error overlays on type
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.id]: e.target.value });
     if (errorMessage) setErrorMessage("");
@@ -41,8 +43,9 @@ const LoginPage = () => {
 
         const token = "Bearer " + response.data.token;
         storeToken(token);
-
         saveLoggedInUser(response.data.user.id);
+        saveLoggedInUserEmail(response.data.user.email);
+
         navigate("/userDashboard");
       })
       .catch((error) => {
@@ -65,166 +68,110 @@ const LoginPage = () => {
   };
 
   return (
-    <div
-      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center "
-      style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
-    >
-      <div
-        className="w-100 position-relative"
-        style={{
-          maxWidth: "520px",
-          padding: "40px 20px 20px 20px", // Increased top padding to account for the close button
-          border: "0.4px solid",
-          borderRadius: "12px",
-        }}
-      >
+    <div className="login-wrapper" style={{ backgroundImage: `url(${aura})` }}>
+      <div className="login-card card shadow-sm border-0">
         {/* Top Right Close Button */}
         <button
-          onClick={() => navigate(-1)} // Takes the user back to the previous page
-          className="btn btn-sm text-secondary p-0 border-0 position-absolute"
-          style={{
-            top: "16px",
-            right: "20px",
-            fontSize: "1.5rem",
-            lineHeight: 1,
-            opacity: 0.6,
-            transition: "opacity 0.2s ease",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-          onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.6")}
-          title="Close and go back"
+          onClick={() => navigate("/")}
+          className="login-close-btn"
+          title="Go back"
         >
           &times;
         </button>
 
-        {/* Minimal Branding */}
+        {/* Branding / Header Section */}
         <div className="text-center mb-4">
-          <h2 className="fw-bold tracking-tight text-dark mb-1">
-            Sign in to AuraFlow
-          </h2>
-          <p className="text-muted small">
-            Enter your credentials to access your account
-          </p>
+          <h2 className="fw-bold text-dark mb-1">AuraFlow</h2>
+          <p className="text-muted small">Sign in to your account</p>
         </div>
 
         {/* Global Feedback Banners */}
         {successMessage && (
-          <div
-            className="alert alert-success border-0 small text-center mb-3 py-2"
-            role="alert"
-          >
+          <div className="alert alert-success border-0 small text-center mb-3 py-2">
             {successMessage}
           </div>
         )}
 
         {errorMessage && !Object.values(fieldErrors).some(Boolean) && (
-          <div
-            className="alert alert-danger border-0 small text-center mb-3 py-2"
-            role="alert"
-          >
+          <div className="alert alert-danger border-0 small text-center mb-3 py-2">
             {errorMessage}
           </div>
         )}
 
-        {/* Auth Card */}
-        <div
-          className="card border-0 shadow-sm p-4 bg-white"
-          style={{ borderRadius: "12px" }}
-        >
-          <form onSubmit={handleSubmit} noValidate>
-            {/* Email Field */}
-            <div className="mb-3">
-              <label
-                htmlFor="email"
-                className="form-label small fw-medium text-secondary"
-              >
-                Email address
-              </label>
-              <input
-                required
-                type="email"
-                id="email"
-                className={`form-control ${fieldErrors.email ? "is-invalid" : ""}`}
-                placeholder="you@example.com"
-                value={userData.email}
-                onChange={handleChange}
-                disabled={isLoading}
-                style={{ borderRadius: "6px", fontSize: "0.95rem" }}
-              />
-              {fieldErrors.email && (
-                <div className="invalid-feedback small mt-1">
-                  {fieldErrors.email}
-                </div>
-              )}
-            </div>
-
-            {/* Password Field */}
-            <div className="mb-4">
-              <div className="d-flex justify-content-between align-items-center mb-1">
-                <label
-                  htmlFor="password"
-                  className="form-label small fw-medium text-secondary mb-0"
-                >
-                  Password
-                </label>
-              </div>
-              <input
-                required
-                type="password"
-                id="password"
-                className={`form-control ${fieldErrors.password ? "is-invalid" : ""}`}
-                placeholder="••••••••"
-                value={userData.password}
-                onChange={handleChange}
-                disabled={isLoading}
-                style={{ borderRadius: "6px", fontSize: "0.95rem" }}
-              />
-              {fieldErrors.password && (
-                <div className="invalid-feedback small mt-1">
-                  {fieldErrors.password}
-                </div>
-              )}
-            </div>
-
-            {/* Action Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="btn btn-dark w-100 py-2 fw-medium d-flex align-items-center justify-content-center gap-2"
-              style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+        {/* Interaction Form */}
+        <form onSubmit={handleSubmit} noValidate>
+          {/* Email Field */}
+          <div className="mb-3">
+            <label
+              htmlFor="email"
+              className="form-label small fw-medium text-secondary"
             >
-              {isLoading ? (
-                <>
-                  <span
-                    className="spinner-border spinner-border-sm"
-                    aria-hidden="true"
-                  ></span>
-                  <span>Signing in...</span>
-                </>
-              ) : (
-                "Sign In"
-              )}
-            </button>
-          </form>
-        </div>
+              Email Address
+            </label>
+            <input
+              required
+              type="email"
+              id="email"
+              placeholder="name@example.com"
+              className={`form-control login-input ${fieldErrors.email ? "is-invalid" : ""}`}
+              value={userData.email}
+              onChange={handleChange}
+              disabled={isLoading}
+            />
+            {fieldErrors.email && (
+              <div className="invalid-feedback small mt-1">
+                {fieldErrors.email}
+              </div>
+            )}
+          </div>
 
-        {/* Bottom Footer Navigation Links */}
+          {/* Password Field */}
+          <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="form-label small fw-medium text-secondary"
+            >
+              Password
+            </label>
+            <input
+              required
+              type="password"
+              id="password"
+              placeholder="••••••••"
+              className={`form-control login-input ${fieldErrors.password ? "is-invalid" : ""}`}
+              value={userData.password}
+              onChange={handleChange}
+              disabled={isLoading}
+            />
+            {fieldErrors.password && (
+              <div className="invalid-feedback small mt-1">
+                {fieldErrors.password}
+              </div>
+            )}
+          </div>
+
+          {/* Action Submit Button */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="btn btn-dark w-100 py-2 login-btn"
+          >
+            {isLoading ? "Connecting..." : "Sign In"}
+          </button>
+        </form>
+
+        {/* Footer Navigation Link */}
         <div className="text-center mt-4">
           <p className="text-muted small mb-0">
-            Don't have an account?{" "}
-            <a
-              href="/register"
-              className="text-dark fw-medium text-decoration-none border-bottom border-secondary"
+            New here?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="btn btn-link btn-sm text-dark fw-semibold p-0 text-decoration-none"
+              style={{ verticalAlign: "baseline" }}
             >
-              Sign up
-            </a>
+              Create an account
+            </button>
           </p>
-          <button
-            onClick={() => navigate("/")}
-            className="btn btn-link btn-sm text-muted text-decoration-none mt-2"
-          >
-            ← Back to homepage
-          </button>
         </div>
       </div>
     </div>
