@@ -79,7 +79,7 @@ const UserDashboard = () => {
         {/* ROW 2: METRIC OVERVIEW CARDS */}
         <div className="row g-3 mb-4">
           <div className="col-12 col-sm-6 col-md-3">
-            <div className="dashboard-metric-card card h-100 border-0 shadow-sm p-3">
+            <div className="dashboard-metric-card card h-100 border-1 shadow-sm p-3">
               <div className="d-flex align-items-center justify-content-between mb-2">
                 <span className="dashboard-metric-label text-secondary small fw-medium text-uppercase tracking-wider">
                   Profile Status
@@ -96,7 +96,7 @@ const UserDashboard = () => {
           </div>
 
           <div className="col-12 col-sm-6 col-md-3">
-            <div className="dashboard-metric-card card h-100 border-0 shadow-sm p-3">
+            <div className="dashboard-metric-card card h-100 border-1 shadow-sm p-3">
               <div className="d-flex align-items-center justify-content-between mb-2">
                 <span className="dashboard-metric-label text-secondary small fw-medium text-uppercase tracking-wider">
                   Wellness Cycle
@@ -111,7 +111,7 @@ const UserDashboard = () => {
           </div>
 
           <div className="col-12 col-sm-6 col-md-3">
-            <div className="dashboard-metric-card card h-100 border-0 shadow-sm p-3">
+            <div className="dashboard-metric-card card h-100 border-1 shadow-sm p-3">
               <div className="d-flex align-items-center justify-content-between mb-2">
                 <span className="dashboard-metric-label text-secondary small fw-medium text-uppercase tracking-wider">
                   Logged Symptoms
@@ -126,7 +126,7 @@ const UserDashboard = () => {
           </div>
 
           <div className="col-12 col-sm-6 col-md-3">
-            <div className="dashboard-metric-card card h-100 border-0 shadow-sm p-3">
+            <div className="dashboard-metric-card card h-100 border-1 shadow-sm p-3">
               <div className="d-flex align-items-center justify-content-between mb-2">
                 <span className="dashboard-metric-label text-secondary small fw-medium text-uppercase tracking-wider">
                   Member Since
@@ -145,30 +145,9 @@ const UserDashboard = () => {
 
         {/* ROW 3: SYSTEM WORKSPACE LAYOUT */}
         <div className="row g-4">
-          {/* Diagnostic Display Panel */}
-          <div className="col-md-8">
-            <div className="dashboard-panel-card card border-0 shadow-sm p-4 h-100">
-              <h5 className="fw-bold text-dark tracking-tight mb-3">
-                Your Wellness Insights
-              </h5>
-              <div className="dashboard-empty-state p-5 text-center border border-secondary border-opacity-10 border-dashed bg-light">
-                <span className="dashboard-empty-title text-secondary fw-semibold d-block mb-2">
-                  No recent metrics recorded today
-                </span>
-                <p className="dashboard-empty-text text-muted small mx-auto mb-4">
-                  Start tracking your data parameters or symptoms to populate
-                  your diagnostic charts.
-                </p>
-                <button className="btn btn-dark btn-sm px-4 py-2 fw-medium dashboard-action-btn">
-                  + Log Today's Metrics
-                </button>
-              </div>
-            </div>
-          </div>
-
           {/* Quick Actions Control Block */}
-          <div className="col-md-4">
-            <div className="dashboard-panel-card card border-0 shadow-sm p-4 h-100">
+          <div className="col-md-3">
+            <div className="dashboard-panel-card card border-1 shadow-sm p-4 h-100">
               <h5 className="fw-bold text-dark tracking-tight mb-3">
                 Quick Actions
               </h5>
@@ -211,6 +190,27 @@ const UserDashboard = () => {
                     <span className="text-muted small">→</span>
                   </Link>
                 )}
+              </div>
+            </div>
+          </div>
+
+          {/* Diagnostic Display Panel */}
+          <div className="col-md-9">
+            <div className="dashboard-panel-card card border-1 shadow-sm p-4 h-100">
+              <h5 className="fw-bold text-dark tracking-tight mb-3">
+                Your Wellness Insights
+              </h5>
+              <div className="dashboard-empty-state p-5 text-center border border-secondary border-opacity-10 border-dashed bg-light">
+                <span className="dashboard-empty-title text-secondary fw-semibold d-block mb-2">
+                  No recent metrics recorded today
+                </span>
+                <p className="dashboard-empty-text text-muted small mx-auto mb-4">
+                  Start tracking your data parameters or symptoms to populate
+                  your diagnostic charts.
+                </p>
+                <button className="btn btn-dark btn-sm px-4 py-2 fw-medium dashboard-action-btn">
+                  + Log Today's Metrics
+                </button>
               </div>
             </div>
           </div>
