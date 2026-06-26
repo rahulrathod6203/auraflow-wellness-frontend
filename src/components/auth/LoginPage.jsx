@@ -66,7 +66,7 @@ const LoginPage = () => {
 
   return (
     <div
-      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light"
+      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center "
       style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
       <div
