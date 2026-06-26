@@ -1,6 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./App.css";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,7 +12,6 @@ import {
 // Layout & Section Views
 import Header from "./components/homepage/Header";
 import Homepage from "./components/homepage/Homepage";
-import Footer from "./components/homepage/Footer";
 
 // Authentication Views
 import LoginPage from "./components/auth/LoginPage";
@@ -72,8 +72,6 @@ const App = () => {
           }
         />
       </Routes>
-
-      {/* <Footer /> */}
     </Router>
   );
 };

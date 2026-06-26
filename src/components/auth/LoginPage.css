@@ -14,7 +14,7 @@
 /* Glassmorphism card framing matching identical width & breathing scales */
 .login-card {
   width: 100%;
-  max-width: 440px;
+  max-width: 540px;
   padding: 40px 30px 30px 30px;
   border-radius: 12px;
   position: relative; /* Allows absolute positioning for close button */

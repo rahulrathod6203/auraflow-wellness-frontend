@@ -1,0 +1,36 @@
+/* Custom navigation core alignment wrapper */
+.header-navbar {
+  background-color: #1a1a1a;
+  font-family: "'Inter', system-ui, sans-serif";
+  border-bottom: 1px solid rgba(108, 117, 125, 0.25);
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+/* App logo styling */
+.header-brand-icon {
+  font-size: 1.1rem;
+}
+
+/* Responsive mobile toggle scale presets */
+.header-toggler-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Core action button boundaries */
+.header-started-btn {
+  border-radius: 6px;
+}
+
+/* Active user portrait avatar elements */
+.header-profile-img,
+.header-profile-initial {
+  width: 34px;
+  height: 34px;
+}
+
+/* Letter fallback dynamic bounds setup */
+.header-profile-initial {
+  font-size: 0.85rem;
+}

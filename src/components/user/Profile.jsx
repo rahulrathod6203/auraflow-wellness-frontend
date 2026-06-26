@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getLoggedInUser, logout } from "../auth/AuthService";
-import { getUserById } from "../user/UserService"; // Adjust path to match your structure
-import Swal from "sweetalert2"; // High-quality interview-ready feedback confirmation
+import { getUserById } from "../user/UserService";
+import Swal from "sweetalert2";
+import "./Profile.css"; // Externalized layout rules
 
 function Profile() {
   const location = useLocation();
@@ -65,26 +66,24 @@ function Profile() {
     navigate("/userDashboard");
   };
 
-  // destructive action handler showing full-stack security workflow awareness
   const handleDeleteAccount = () => {
     Swal.fire({
       title: "Delete Account?",
       text: "This action is permanent and cannot be undone. All your wellness data parameters will be wiped from our secure ledger.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#dc3545", // Standard Bootstrap Danger Red
+      confirmButtonColor: "#dc3545",
       cancelButtonColor: "#6c757d",
       confirmButtonText: "Yes, delete permanently",
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
         setIsLoading(true);
-        // Invoke your backend API service: deleteUserById(loggedUserId)
         console.log(`Invoking destructive API route for ID: ${loggedUserId}`);
 
         setTimeout(() => {
           setIsLoading(false);
-          logout(); // Clear JWT and session storage tokens
+          logout();
           Swal.fire({
             title: "Account Deleted",
             text: "Your profile profile records have been removed successfully.",
@@ -102,31 +101,14 @@ function Profile() {
     profileData.role?.toLowerCase() === "admin";
 
   return (
-    <div
-      className="container-fluid min-vh-100 bg-light d-flex align-items-center py-5"
-      style={{
-        fontFamily: "'Inter', system-ui, sans-serif",
-        paddingTop: "90px",
-      }}
-    >
-      <div
-        className="container"
-        style={{
-          maxWidth: "880px",
-        }}
-      >
+    <div className="profile-wrapper container-fluid min-vh-100 bg-light d-flex align-items-center py-5">
+      <div className="container profile-container">
         <div className="row g-4">
           {/* Left Column: Summary Info Profile Plate */}
-          <div className="col-12 col-md-4 ">
-            <div
-              className="card border-1 shadow-sm p-4 text-center bg-white h-100"
-              style={{ borderRadius: "12px" }}
-            >
+          <div className="col-12 col-md-4">
+            <div className="profile-sidebar card border-1 shadow-sm p-4 text-center bg-white h-100">
               <div className="d-flex flex-column align-items-center justify-content-center h-100">
-                <div
-                  className="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center fw-semibold mb-3 shadow-sm"
-                  style={{ width: "72px", height: "72px", fontSize: "1.75rem" }}
-                >
+                <div className="profile-avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center fw-semibold mb-3 shadow-sm">
                   {profileData.name
                     ? profileData.name.charAt(0).toUpperCase()
                     : "U"}
@@ -139,15 +121,12 @@ function Profile() {
                   {profileData.email || "Loading..."}
                 </p>
 
-                <span className="badge bg-dark text-white border border-light-subtle px-4  py-2 rounded-pill mb-2 small fw-medium">
+                <span className="badge bg-dark text-white border border-light-subtle px-4 py-2 rounded-pill mb-2 small fw-medium">
                   {isAdmin ? "Admin Access" : "Standard Account"}
                 </span>
 
                 {profileData.joinedDate && (
-                  <span
-                    className="text-muted small mt-2"
-                    style={{ fontSize: "0.8rem" }}
-                  >
+                  <span className="profile-joined text-muted small mt-2">
                     Joined {profileData.joinedDate}
                   </span>
                 )}
@@ -155,12 +134,9 @@ function Profile() {
             </div>
           </div>
 
-          {/* Right Column: Profile Mutation Core Input Form */}
+          {/* Right Column: Profile Form Info Field Blocks */}
           <div className="col-12 col-md-8">
-            <div
-              className="card border-1 shadow-sm p-4 bg-white mb-4"
-              style={{ borderRadius: "12px" }}
-            >
+            <div className="profile-main-card card border-1 shadow-sm p-4 bg-white mb-4">
               <div className="card-body p-0">
                 <div className="mb-4">
                   <h4 className="fw-bold text-dark tracking-tight mb-1">
@@ -189,8 +165,7 @@ function Profile() {
                         value={profileData.name || ""}
                         onChange={handleChange}
                         disabled={isLoading}
-                        className="form-control"
-                        style={{ borderRadius: "6px", fontSize: "0.95rem" }}
+                        className="form-control profile-input"
                       />
                     </div>
 
@@ -208,12 +183,7 @@ function Profile() {
                         value={profileData.email || ""}
                         readOnly
                         disabled
-                        className="form-control bg-light text-muted border-light-subtle"
-                        style={{
-                          borderRadius: "6px",
-                          fontSize: "0.95rem",
-                          cursor: "not-allowed",
-                        }}
+                        className="form-control bg-light text-muted border-light-subtle profile-input profile-disabled-input"
                       />
                     </div>
                   </div>
@@ -234,12 +204,7 @@ function Profile() {
                         value={profileData.phone || ""}
                         readOnly
                         disabled
-                        className="form-control bg-light text-muted border-light-subtle"
-                        style={{
-                          borderRadius: "6px",
-                          fontSize: "0.95rem",
-                          cursor: "not-allowed",
-                        }}
+                        className="form-control bg-light text-muted border-light-subtle profile-input profile-disabled-input"
                       />
                     </div>
 
@@ -258,12 +223,7 @@ function Profile() {
                         value={profileData.password || ""}
                         readOnly
                         disabled
-                        className="form-control bg-light text-muted border-light-subtle"
-                        style={{
-                          borderRadius: "6px",
-                          fontSize: "0.95rem",
-                          cursor: "not-allowed",
-                        }}
+                        className="form-control bg-light text-muted border-light-subtle profile-input profile-disabled-input"
                       />
                     </div>
                   </div>
@@ -284,31 +244,24 @@ function Profile() {
                       value={profileData.address || ""}
                       onChange={handleChange}
                       disabled={isLoading}
-                      className="form-control"
-                      style={{
-                        borderRadius: "6px",
-                        fontSize: "0.95rem",
-                        resize: "none",
-                      }}
+                      className="form-control profile-input profile-textarea"
                     />
                   </div>
 
-                  {/* Footer Controls */}
+                  {/* Footer Action Form Links */}
                   <div className="d-flex gap-2 justify-content-end pt-3 border-top border-light-subtle">
                     <button
                       type="button"
                       onClick={handleDiscard}
                       disabled={isLoading}
-                      className="btn btn-light btn-sm px-3 text-secondary fw-medium"
-                      style={{ borderRadius: "6px" }}
+                      className="btn btn-light btn-sm px-3 text-secondary fw-medium profile-btn"
                     >
                       Discard
                     </button>
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="btn btn-dark btn-sm px-4 fw-medium d-flex align-items-center gap-2"
-                      style={{ borderRadius: "6px" }}
+                      className="btn btn-dark btn-sm px-4 fw-medium d-flex align-items-center gap-2 profile-btn"
                     >
                       {isLoading ? (
                         <>
@@ -327,17 +280,11 @@ function Profile() {
               </div>
             </div>
 
-            {/* INTERVIEW SHOWCASE: Premium destructive separation context box (Danger Zone) */}
-            <div
-              className="card border border-danger border-opacity-20 shadow-sm p-4 bg-white"
-              style={{ borderRadius: "12px" }}
-            >
+            {/* Premium Destructive Zone Frame Panel */}
+            <div className="profile-danger-card card border border-danger border-opacity-20 shadow-sm p-4 bg-white">
               <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
                 <div>
-                  <h5
-                    className="fw-bold text-danger tracking-tight mb-1"
-                    style={{ fontSize: "1rem" }}
-                  >
+                  <h5 className="fw-bold text-danger tracking-tight mb-1 profile-danger-title">
                     Danger Zone
                   </h5>
                   <p className="text-muted small mb-0">
@@ -349,8 +296,7 @@ function Profile() {
                   type="button"
                   onClick={handleDeleteAccount}
                   disabled={isLoading}
-                  className="btn btn-outline-danger btn-sm px-3 fw-medium text-nowrap align-self-start align-self-sm-center"
-                  style={{ borderRadius: "6px" }}
+                  className="btn btn-outline-danger btn-sm px-3 fw-medium text-nowrap align-self-start align-self-sm-center profile-btn"
                 >
                   Delete Account
                 </button>

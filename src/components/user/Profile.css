@@ -1,0 +1,55 @@
+/* Container layout initialization */
+.profile-wrapper {
+  /* font-family: "'Inter', system-ui, sans-serif"; */
+  padding-top: 90px;
+}
+
+/* Form boundary dimensions constraints */
+.profile-container {
+  max-width: 880px;
+}
+
+/* Card layout configurations */
+.profile-sidebar,
+.profile-main-card,
+.profile-danger-card {
+  border-radius: 12px;
+}
+
+/* Left Summary circle initialization */
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  font-size: 1.75rem;
+}
+
+/* Relative text helpers scaling properties */
+.profile-joined {
+  font-size: 0.8rem;
+}
+
+/* Shared form element presets configuration bounds */
+.profile-input {
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+/* Unchangeable security input boundaries lock triggers */
+.profile-disabled-input {
+  cursor: not-allowed;
+}
+
+/* Layout parameter controls to maintain dynamic wrapper properties */
+.profile-textarea {
+  resize: none;
+}
+
+/* Clean action trigger boundaries constraints */
+.profile-btn {
+  border-radius: 6px;
+}
+
+/* Header scale parameter presets */
+.profile-danger-title {
+  font-size: 1rem;
+}

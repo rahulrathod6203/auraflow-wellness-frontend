@@ -1,0 +1,44 @@
+/* Container global rules setting unified typography stack */
+.userlist-wrapper {
+  /* font-family: "'Inter', system-ui, sans-serif" !important; */
+  padding-top: 90px;
+}
+
+.userlist-container {
+  padding-top: 40px;
+}
+
+/* Master container card boundaries */
+.userlist-card {
+  border-radius: 12px;
+}
+
+/* Base table typography scale */
+.userlist-table {
+  font-size: 0.9rem;
+}
+
+/* Dark header row theme constraints overriding defaults */
+.userlist-thead {
+  background-color: #1a1a1a;
+}
+
+/* Address cell truncation rule constraints */
+.userlist-address {
+  max-width: 180px;
+}
+
+/* Mini role badge micro-typographic layouts */
+.userlist-role-badge {
+  font-size: 0.75rem;
+}
+
+/* Inner row dynamic trigger actions borders */
+.userlist-action-btn {
+  border-radius: 4px;
+}
+
+/* Bottom pagination control trigger boundary configs */
+.userlist-page-btn {
+  border-radius: 6px;
+}

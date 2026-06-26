@@ -1,0 +1,103 @@
+/* Container global rules */
+.dashboard-wrapper {
+  /* font-family: "'Inter', system-ui, sans-serif"; */
+}
+
+.dashboard-container {
+  padding-top: 80px;
+}
+
+/* Premium Dark Card Banner */
+.dashboard-hero {
+  background-color: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-greeting {
+  letter-spacing: -1px;
+}
+
+/* Metric card specific layouts */
+.dashboard-metric-card,
+.dashboard-panel-card {
+  border-radius: 12px;
+}
+
+.dashboard-metric-label {
+  font-size: 0.75rem;
+}
+
+.dashboard-metric-desc {
+  font-size: 0.85rem;
+}
+
+/* Central empty chart blocks style templates */
+.dashboard-empty-state {
+  border-radius: 8px;
+}
+
+.dashboard-empty-title {
+  font-size: 1.1rem;
+}
+
+.dashboard-empty-text {
+  max-width: 340px;
+  font-size: 0.88rem;
+}
+
+.dashboard-action-btn {
+  border-radius: 6px;
+}
+
+/* Floating AI Chat System Elements Configuration */
+.dashboard-chat-wrapper {
+  z-index: 1050;
+}
+
+.dashboard-chat-box {
+  width: 340px;
+  height: 450px;
+  border-radius: 12px;
+  bottom: 70px;
+  right: 0;
+}
+
+.dashboard-chat-close {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.dashboard-chat-body {
+  font-size: 0.85rem;
+}
+
+.dashboard-chat-bubble {
+  max-width: 85%;
+}
+
+.dashboard-chat-input {
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.dashboard-chat-send {
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+/* Core floating bubble trigger styling with explicit hover transitions */
+.dashboard-chat-toggle {
+  width: 56px;
+  height: 56px;
+  background-color: #1a1a1a;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.dashboard-chat-toggle:hover {
+  transform: scale(1.05);
+}
+
+.dashboard-chat-icon {
+  font-size: 1.5rem;
+}

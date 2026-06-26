@@ -96,9 +96,9 @@ const Header = () => {
             <li className="nav-item">
               <Link
                 className="nav-link text-white-50 small fw-medium"
-                to={isAuthenticated ? "/contact" : "/contact"}
+                to={isAuthenticated ? "" : "/contact"}
               >
-                {isAuthenticated ? "Need Help?" : "Contact us"}
+                {isAuthenticated ? "" : "Contact us"}
               </Link>
             </li>
           </ul>
