@@ -1,6 +1,11 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { getLoggedInUser, isUserLoggedIn, logout } from "../auth/AuthService";
+import {
+  getLoggedInUser,
+  getLoggedInUserEmail,
+  isUserLoggedIn,
+  logout,
+} from "../auth/AuthService";
 import Swal from "sweetalert2";
 
 const Header = () => {

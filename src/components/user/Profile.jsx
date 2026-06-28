@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getLoggedInUser, logout } from "../auth/AuthService";
 import { getUserById } from "../user/UserService";
+import { updateUserById } from "../user/userService";
 import Swal from "sweetalert2";
-import "./Profile.css"; // Externalized layout rules
+import "./Profile.css";
 
 function Profile() {
   const location = useLocation();
@@ -46,22 +47,36 @@ function Profile() {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    // setError(null); // Optional: clear previous errors
+
     console.log("Saving updates to AuraFlow backend:", profileData);
 
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Await the actual API response from your backend
+      const response = await updateUserById(loggedUserId, profileData);
+
+      // Once backend returns 200/201 OK, trigger success UI
       Swal.fire({
         title: "Success",
         text: "Configuration saved successfully.",
         icon: "success",
         confirmButtonColor: "#1a1a1a",
       });
-    }, 800);
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+      Swal.fire({
+        title: "Error",
+        text: err.response?.data?.message || "Failed to save configuration.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
-
   const handleDiscard = () => {
     navigate("/userDashboard");
   };

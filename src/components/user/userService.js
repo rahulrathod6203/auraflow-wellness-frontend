@@ -22,3 +22,11 @@ export const getUserById = (id) => {
 export const getAllUsers = (pageNo = 0, pageSize = 10) => {
   return axios.get(`${BASE_URL}?pageNo=${pageNo}&pageSize=${pageSize}`);
 };
+
+export const updateUserById = (id, userData) => {
+  return axios.put(`${BASE_URL}/${id}`, userData);
+};
+
+export const deleteUserById = (id) => {
+  return axios.put(`${BASE_URL}/${id}`);
+};

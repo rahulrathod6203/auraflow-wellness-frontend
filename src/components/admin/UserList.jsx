@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { getAllUsers } from "../user/UserService";
 import { isUserLoggedIn } from "../auth/AuthService";
 import "./UserList.css"; // Externalized styling rules
+import Profile from "../user/Profile";
+import RegisterPage from "../auth/RegisterPage";
+import UserUpdateCard from "../user/UserUpdateCard";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -11,6 +14,11 @@ const UserList = () => {
   const [currentPage, setCurrentPage] = useState(0); // 0-indexed for Spring Boot
   const [isLastPage, setIsLastPage] = useState(false);
   const pageSize = 10;
+
+  const updateUser = (id) => {
+    // updating user by id
+    console.log("User id is: " + id);
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -90,7 +98,10 @@ const UserList = () => {
                       </td>
                       <td className="text-center pe-3">
                         <div className="d-flex gap-2 justify-content-center">
-                          <button className="btn btn-sm btn-outline-dark fw-medium userlist-action-btn">
+                          <button
+                            className="btn btn-sm btn-outline-dark fw-medium userlist-action-btn"
+                            onClick={() => updateUser(user.id)}
+                          >
                             Update
                           </button>
                           <button className="btn btn-sm btn-outline-danger fw-medium userlist-action-btn">
@@ -139,6 +150,50 @@ const UserList = () => {
           </div>
         </div>
       </div>
+      {/* model */}
+
+      {/* Modal Trigger Button */}
+      <button
+        type="button"
+        className="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#myModal"
+      >
+        Open modal
+      </button>
+
+      {/* Modal Structure */}
+      <div className="modal fade" id="myModal" tabIndex="-1" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h4 className="modal-title">Modal Heading</h4>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <div className="modal-body">
+              <UserUpdateCard />
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-danger"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* model end */}
     </div>
   );
 };
